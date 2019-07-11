@@ -51,7 +51,7 @@ app.get('/login/twitter', passport.authenticate('twitter'));
 app.get('/oauth/callback',
   passport.authenticate('twitter', { failureRedirect: '/login' }),
   (request, response) => {
-    response.redirect('/dashboard');
+    response.redirect('mobivate://');
   }
 );
 
