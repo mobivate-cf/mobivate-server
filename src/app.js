@@ -61,7 +61,7 @@ app.get('/dashboard', (request, response) => {
 
 app.get('/logout', (request, response) => {
   request.session.destroy(err => {
-    response.redirect('/');
+    response.redirect('mobivate://');
   }); 
 });
 
