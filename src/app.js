@@ -53,12 +53,10 @@ app.get(
     console.log('callback logic ==================================================================');
 
     console.log(request);
-    console.log(Object.keys(request));
-    console.log('session: ==> ', request.session);
 
-    console.log('twitter strategy _oauth: ==> ', request._passport.instance._strategies.twitter);
-
-    response.send(JSON.parse(request));
+    const sessionId = request.sessionID;
+    const sessionData = request.sessionStore.sessions[sessionId];
+    console.log(JSON.parse(sessionData));
 
     const userData = request.user._json;
 
