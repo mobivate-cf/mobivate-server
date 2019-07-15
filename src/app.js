@@ -54,10 +54,9 @@ app.get(
     console.log('=================================================================================');
     console.log('callback logic ==================================================================');
 
-    console.log(request.sessionStore.sessions);
-
     let keys = Object.keys(request.sessionStore.sessions);
     let oAuthData = JSON.parse(request.sessionStore.sessions[keys[0]]);
+    console.log('sessions: ', oAuthData);
     oAuthData = oAuthData['oauth:twitter'];
 
     const userData = request.user._json;
