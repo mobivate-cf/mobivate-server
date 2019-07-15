@@ -63,7 +63,7 @@ app.get(
 
     // send username, displayname and id to frontend
     // response.send({ userId, userName, userScreenName, photoLink, oAuthToken, oAuthVerifier });
-    response.redirect(`https://exp.io/@melissastock/front-end/?username=${userName}`);
+    response.redirect(`https://exp.host/@melissastock/front-end/?username=${userName}`);
   }
 );
 
