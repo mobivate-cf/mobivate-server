@@ -56,7 +56,7 @@ app.get(
 
     const sessionId = request.sessionID;
     const sessionData = request.sessionStore.sessions[sessionId];
-    console.log(JSON.parse(sessionData));
+    console.log(JSON.parse(sessionData['oauth:twitter']));
 
     const userData = request.user._json;
 
@@ -74,7 +74,7 @@ app.get(
 
     // send username, displayname and id to frontend
 
-    // response.send(savedUserData);
+    response.send(savedUserData);
     // response.redirect(`exp://exp.host/@melissastock/front-end/?username=${savedUserData.userName}`);
   }
 );
