@@ -50,6 +50,8 @@ app.get(
   '/oauth/callback',
   passport.authenticate('twitter', { failureRedirect: '/login/twitter' }),
   (request, response) => {
+    console.log('=================================================================================');
+    console.log('callback logic ==================================================================');
     const userData = request.user._json;
     const photoLink = request.user.photos[0].value;
 
@@ -63,7 +65,7 @@ app.get(
 
     // send username, displayname and id to frontend
     // response.send({ userId, userName, userScreenName, photoLink, oAuthToken, oAuthVerifier });
-    response.redirect(`exp://exp.host/@melissastock/front-end`);
+    response.redirect(`exp://exp.io/@melissastock/front-end`);
 
     // response.redirect(`https://exp.host/@melissastock/front-end/?username=${userName}`);
   }
