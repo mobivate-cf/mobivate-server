@@ -56,7 +56,7 @@ app.get(
 
     const sessionId = request.sessionID;
     const sessionData = request.sessionStore.sessions[sessionId];
-    console.log(JSON.parse(sessionData['oauth:twitter']));
+    console.log(JSON.parse(sessionData)['oauth:twitter']);
 
     const userData = request.user._json;
 
