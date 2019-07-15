@@ -54,7 +54,7 @@ app.get(
 
     const sessionKeys = Object.keys(request.sessionStore.sessions);
     const lastSessionKey = sessionKeys[sessionKeys.length - 1];
-    console.log('last session: ', JSONparse(request.sessionStore.sessions[lastSessionKey]));
+    console.log('last session: ', JSON.parse(request.sessionStore.sessions[lastSessionKey]));
 
     const userData = request.user._json;
 
