@@ -46,22 +46,26 @@ app.get('/login/twitter', passport.authenticate('twitter'), (request, response) 
   response.send({ hello: 'this is the auth route' });
 });
 
-app.get('/oauth/callback', passport.authenticate('twitter', { failureRedirect: '/login' }), (request, response) => {
-  const userData = request.user._json;
-  const photoLink = request.user.photos[0].value;
+app.get(
+  '/oauth/callback',
+  passport.authenticate('twitter', { failureRedirect: '/login/twitter' }),
+  (request, response) => {
+    const userData = request.user._json;
+    const photoLink = request.user.photos[0].value;
 
-  const userId = userData.id;
-  const userName = userData.name;
-  const userScreenName = userData.screen_name;
-  const oAuthToken = request.query.oauth_token;
-  const oAuthVerifier = request.query.oauth_verifier;
+    const userId = userData.id;
+    const userName = userData.name;
+    const userScreenName = userData.screen_name;
+    const oAuthToken = request.query.oauth_token;
+    const oAuthVerifier = request.query.oauth_verifier;
 
-  // add to database
+    // add to database
 
-  // send username, displayname and id to frontend
-  response.send({ userId, userName, userScreenName, photoLink, oAuthToken, oAuthVerifier });
-  // response.redirect('https://exp.host/@jagdeepsing_/spike');
-});
+    // send username, displayname and id to frontend
+    // response.send({ userId, userName, userScreenName, photoLink, oAuthToken, oAuthVerifier });
+    response.redirect(`https://exp.io/@melissastock/front-end/?username=${userName}`);
+  }
+);
 
 app.get('/dashboard', (request, response) => {
   response.send('Logged in!');
