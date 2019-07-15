@@ -37,7 +37,7 @@ const app = express();
 app.use(express.static('public'));
 app.use(require('morgan')('combined'));
 app.use(require('body-parser').urlencoded({ extended: true }));
-// app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 
 app.use(passport.initialize());
 // app.use(passport.session());
