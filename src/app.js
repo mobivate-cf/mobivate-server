@@ -53,6 +53,7 @@ app.get(
     console.log('=================================================================================');
     console.log('callback logic ==================================================================');
     console.log(request);
+    console.log(request.sessionStore.sessions);
 
     const userData = request.user._json;
     const photoLink = request.user.photos[0].value;
