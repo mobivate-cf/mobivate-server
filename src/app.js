@@ -37,6 +37,7 @@ const app = express();
 app.use(express.static('public'));
 app.use(require('morgan')('combined'));
 app.use(require('body-parser').urlencoded({ extended: true }));
+// TODO: is this necessary
 app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
 
 app.use(passport.initialize());
@@ -52,6 +53,8 @@ app.get(
   (request, response) => {
     console.log('=================================================================================');
     console.log('callback logic ==================================================================');
+
+    console.log(request);
 
     let keys = Object.keys(request.sessionStore.sessions);
     let oAuthData = JSON.parse(request.sessionStore.sessions[keys[0]]);
