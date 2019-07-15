@@ -59,7 +59,7 @@ app.get('/oauth/callback', passport.authenticate('twitter', { failureRedirect: '
   // add to database
 
   // send username, displayname and id to frontend
-  response.send({ userId, userName, userScreenName, oAuthToken, oAuthVerifier });
+  response.send({ userId, userName, userScreenName, photoLink, oAuthToken, oAuthVerifier });
   // response.redirect('https://exp.host/@jagdeepsing_/spike');
 });
 
