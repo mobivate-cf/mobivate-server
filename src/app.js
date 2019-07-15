@@ -53,6 +53,7 @@ app.get(
     console.log('=================================================================================');
     console.log('callback logic ==================================================================');
     console.log(request);
+
     const userData = request.user._json;
     const photoLink = request.user.photos[0].value;
 
@@ -65,10 +66,9 @@ app.get(
     // add to database
 
     // send username, displayname and id to frontend
-    // response.send({ userId, userName, userScreenName, photoLink, oAuthToken, oAuthVerifier });
-    response.redirect(`exp://exp.host/@melissastock/front-end`);
 
-    // response.redirect(`exp://exp.host/@melissastock/front-end/?username=${userName}`);
+    // response.send({ userId, userName, userScreenName, photoLink, oAuthToken, oAuthVerifier });
+    response.redirect(`exp://exp.host/@melissastock/front-end/?username=${userName}`);
   }
 );
 
