@@ -54,6 +54,7 @@ app.get(
 
     console.log(request);
     console.log(Object.keys(request));
+    console.log('session: ==> ', request.session);
     console.log('twitter strategy _oauth: ==> ', request._passport.instance._strategies.twitter._oauth);
 
     const userData = request.user._json;
