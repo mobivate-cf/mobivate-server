@@ -52,7 +52,7 @@ app.get(
   (request, response) => {
     console.log('callback logic ==================================================================');
 
-    console.log(request);
+    console.log(Object.keys(request));
 
     const userData = request.user._json;
 
