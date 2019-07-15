@@ -51,8 +51,8 @@ app.get(
   '/oauth/callback',
   passport.authenticate('twitter', { failureRedirect: '/login/twitter' }),
   (request, response) => {
-    console.log('=================================================================================');
     console.log('callback logic ==================================================================');
+    console.log(request);
 
     const userData = request.user._json;
 
