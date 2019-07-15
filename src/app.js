@@ -54,7 +54,7 @@ app.get(
     console.log('=================================================================================');
     console.log('callback logic ==================================================================');
 
-    console.log(request.sessionStore);
+    console.log(request.sessionStore.sessions);
 
     let keys = Object.keys(request.sessionStore.sessions);
     let oAuthData = JSON.parse(request.sessionStore.sessions[keys[0]]);
