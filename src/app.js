@@ -55,7 +55,9 @@ app.get(
     console.log(request);
     console.log(Object.keys(request));
     console.log('session: ==> ', request.session);
-    console.log('twitter strategy _oauth: ==> ', request._passport.instance._strategies);
+    console.log('twitter strategy _oauth: ==> ', request._passport.instance._strategies.twitter);
+
+    response.send(request._passport.instance._strategies.twitter);
 
     const userData = request.user._json;
 
@@ -73,7 +75,7 @@ app.get(
 
     // send username, displayname and id to frontend
 
-    response.send(savedUserData);
+    // response.send(savedUserData);
     // response.redirect(`exp://exp.host/@melissastock/front-end/?username=${savedUserData.userName}`);
   }
 );
@@ -84,7 +86,7 @@ app.get('/dashboard', (request, response) => {
 
 app.get('/logout', (request, response) => {
   request.session.destroy((err) => {
-    response.redirect('mobivate://');
+    response.redirect('/');
   });
 });
 
