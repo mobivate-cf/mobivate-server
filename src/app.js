@@ -54,8 +54,8 @@ app.get(
 
     console.log(request);
     console.log(Object.keys(request));
-    console.log('_passport', request._passport);
-    console.log('authInfo', request.authInfo);
+    console.log('_passport.instance: ==> ', request._passport.instance);
+    console.log('authInfo: ==> ', request.authInfo);
 
     const userData = request.user._json;
 
