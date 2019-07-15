@@ -52,28 +52,29 @@ app.get(
   (request, response) => {
     console.log('=================================================================================');
     console.log('callback logic ==================================================================');
-    // console.log(request);
 
     let keys = Object.keys(request.sessionStore.sessions);
-    let data = JSON.parse(request.sessionStore.sessions[keys[0]]);
-    data = data['oauth:twitter'];
-    console.log(data);
+    let oAuthData = JSON.parse(request.sessionStore.sessions[keys[0]]);
+    oAuthData = oAuthData['oauth:twitter'];
 
     const userData = request.user._json;
-    const photoLink = request.user.photos[0].value;
 
-    const userId = userData.id;
-    const userName = userData.name;
-    const userScreenName = userData.screen_name;
-    const oAuthToken = request.query.oauth_token;
-    const oAuthVerifier = request.query.oauth_verifier;
+    const savedUserData = {
+      userId: userData.id,
+      userName: userData.name,
+      userScreenName: userData.screen_name,
+      photoLink: request.user.photos[0].value,
+      oAuthToken: request.query.oauth_token,
+      oAuthVerifier: request.query.oauth_verifier,
+      oAuthTokenSecret: oAuthData.oauth_token_secret,
+    };
 
     // add to database
 
     // send username, displayname and id to frontend
 
-    // response.send({ userId, userName, userScreenName, photoLink, oAuthToken, oAuthVerifier });
-    response.redirect(`exp://exp.host/@melissastock/front-end/?username=${userName}`);
+    response.send(savedUserData);
+    // response.redirect(`exp://exp.host/@melissastock/front-end/?username=${savedUserData.userName}`);
   }
 );
 
