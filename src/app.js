@@ -20,9 +20,6 @@ passport.use(
       proxy: trustProxy,
     },
     function(token, tokenSecret, profile, cb) {
-      console.log('token: ', token);
-      console.log('token_secret: ', tokenSecret);
-      // console.log('strategy profile: ', profile);
       return cb(null, profile);
     }
   )
@@ -55,7 +52,10 @@ app.get(
   passport.authenticate('twitter', { failureRedirect: '/login/twitter' }),
   (request, response) => {
     console.log('callback logic ==================================================================');
-    console.log(request.sessionStore.sessions);
+
+    const sessionKeys = Object.keys(request.sessionStore.sessions);
+    const lastSessionKey = sessionKeys[sessionKeys.length - 1];
+    console.log('last session: ', request.sessionStore.sessions[lastSessionKey]);
 
     const userData = request.user._json;
 
