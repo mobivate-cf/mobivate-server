@@ -38,7 +38,7 @@ app.use(express.static('public'));
 app.use(require('morgan')('combined'));
 app.use(require('body-parser').urlencoded({ extended: true }));
 // TODO: is this necessary
-app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+// app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -54,11 +54,6 @@ app.get(
     console.log('=================================================================================');
     console.log('callback logic ==================================================================');
 
-    let keys = Object.keys(request.sessionStore.sessions);
-    let oAuthData = JSON.parse(request.sessionStore.sessions[keys[0]]);
-    console.log('sessions: ', oAuthData);
-    oAuthData = oAuthData['oauth:twitter'];
-
     const userData = request.user._json;
 
     const savedUserData = {
@@ -68,7 +63,7 @@ app.get(
       photoLink: request.user.photos[0].value,
       oAuthToken: request.query.oauth_token,
       oAuthVerifier: request.query.oauth_verifier,
-      oAuthTokenSecret: oAuthData.oauth_token_secret,
+      // oAuthTokenSecret: oAuthData.oauth_token_secret,
     };
 
     // add to database
