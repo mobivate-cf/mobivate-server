@@ -37,7 +37,6 @@ const app = express();
 app.use(express.static('public'));
 app.use(require('morgan')('combined'));
 app.use(require('body-parser').urlencoded({ extended: true }));
-// TODO: is this necessary
 app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 
 app.use(passport.initialize());
@@ -55,7 +54,7 @@ app.get(
 
     const sessionKeys = Object.keys(request.sessionStore.sessions);
     const lastSessionKey = sessionKeys[sessionKeys.length - 1];
-    console.log('last session: ', request.sessionStore.sessions[lastSessionKey]);
+    console.log('last session: ', JSONparse(request.sessionStore.sessions[lastSessionKey]));
 
     const userData = request.user._json;
 
