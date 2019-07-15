@@ -47,7 +47,10 @@ app.get('/login/twitter', (request, response) => {
 });
 
 app.get('/oauth/callback', passport.authenticate('twitter', { failureRedirect: '/login' }), (request, response) => {
+  console.log('=========================================================');
   console.log(request);
+  console.log('=========================================================');
+
   response.send(request);
   // response.redirect('https://exp.host/@jagdeepsing_/spike');
 });
