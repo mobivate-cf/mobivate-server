@@ -42,8 +42,8 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveU
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/login/twitter', passport.authenticate('twitter'), (request, response) = {
-  
+app.get('/login/twitter', passport.authenticate('twitter'), (request, response) => {
+  response.send({ hello: 'this is the auth route' });
 });
 
 app.get('/oauth/callback', passport.authenticate('twitter', { failureRedirect: '/login' }), (request, response) => {
