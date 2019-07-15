@@ -14,8 +14,8 @@ if (process.env.DYNO) {
 passport.use(
   new Strategy(
     {
-      consumerKey: process.env.TWITTER_ID,
-      consumerSecret: process.env.TWITTER_PASS,
+      consumerKey: process.env.TWITTER_CONSUMER_KEY,
+      consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
       callbackURL: '/oauth/callback',
       proxy: trustProxy,
     },
