@@ -50,7 +50,7 @@ app.get('/oauth/callback', passport.authenticate('twitter', { failureRedirect: '
   const userData = request.user._json;
   const photoLink = request.user.photos[0].value;
 
-  const userID = userData.id;
+  const userId = userData.id;
   const userName = userData.name;
   const userScreenName = userData.screen_name;
   const oAuthToken = request.query.oauth_token;
