@@ -40,7 +40,7 @@ app.use(require('body-parser').urlencoded({ extended: true }));
 app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 
 app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.session());
 
 app.get('/login/twitter', passport.authenticate('twitter'), (request, response) => {
   response.send({ hello: 'this is the auth route' });
@@ -52,7 +52,7 @@ app.get(
   (request, response) => {
     console.log('callback logic ==================================================================');
 
-    passport.session;
+    console.log(request);
 
     const userData = request.user._json;
 
