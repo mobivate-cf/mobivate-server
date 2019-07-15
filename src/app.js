@@ -20,6 +20,7 @@ passport.use(
       proxy: trustProxy,
     },
     function(token, tokenSecret, profile, cb) {
+      console.log('strategy profile: ', profile);
       return cb(null, profile);
     }
   )
