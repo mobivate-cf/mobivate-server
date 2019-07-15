@@ -53,6 +53,7 @@ app.get(
     console.log('callback logic ==================================================================');
 
     console.log(Object.keys(request));
+    console.log(request._passport);
 
     const userData = request.user._json;
 
