@@ -47,11 +47,19 @@ app.get('/login/twitter', passport.authenticate('twitter'), (request, response) 
 });
 
 app.get('/oauth/callback', passport.authenticate('twitter', { failureRedirect: '/login' }), (request, response) => {
-  console.log('=========================================================');
-  console.log(request);
-  console.log('=========================================================');
+  const userData = request.user._json;
+  const photoLink = request.user.photos[0].value;
 
-  response.send(request.user);
+  const userID = userData.id;
+  const userName = userData.name;
+  const userScreenName = userData.screen_name;
+  const oAuthToken = request.query.oauth_token;
+  const oAuthVerifier = request.query.oauth_verifier;
+
+  // add to database
+
+  // send username, displayname and id to frontend
+  response.send({ userId, userName, userScreenName, oAuthToken, oAuthVerifier });
   // response.redirect('https://exp.host/@jagdeepsing_/spike');
 });
 
