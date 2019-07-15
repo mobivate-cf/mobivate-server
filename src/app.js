@@ -56,7 +56,7 @@ app.get(
 
     const sessionId = request.sessionID;
     const sessionData = request.sessionStore.sessions[sessionId];
-    console.log(JSON.parse(sessionData)['oauth:twitter']);
+    const oAuthData = JSON.parse(sessionData)['oauth:twitter'];
 
     const userData = request.user._json;
 
@@ -67,7 +67,7 @@ app.get(
       photoLink: request.user.photos[0].value,
       oAuthToken: request.query.oauth_token,
       oAuthVerifier: request.query.oauth_verifier,
-      // oAuthTokenSecret: oAuthData.oauth_token_secret,
+      oAuthTokenSecret: oAuthData.oauth_token_secret,
     };
 
     // add to database
