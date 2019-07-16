@@ -9,7 +9,7 @@ const Strategy = require('passport-twitter').Strategy;
 
 const app = express();
 
-const database = new pg.Client(process.env.DATABASE_URL);
+const database = new pg.Client(`${process.env.DATABASE_URL}`);
 
 database.connect();
 database.on('error', error => console.log(error));
@@ -53,6 +53,9 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: false, save
 app.use(passport.initialize());
 // app.use(passport.session());
 
+const sql = {};
+sql.test = `SELECT * FROM users`;
+
 app.get('/login/twitter', passport.authenticate('twitter'), (request, response) => {
   response.send({ hello: 'this is the auth route' });
 });
@@ -94,8 +97,17 @@ app.get('/dashboard', (request, response) => {
   response.send('Logged in!');
 });
 
-app.post('/createGoal', (request, response) => {
-
+app.get('/test', (request, response) => {
+  return database.query(sql.test)
+    .then(result => {
+      if(result) {
+        response.send(result);
+      }
+      else {
+        response.send('Whoops');
+      }
+    })
+    .catch(console.error);
 });
 
 app.get('/logout', (request, response) => {
