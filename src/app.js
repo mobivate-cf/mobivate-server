@@ -110,10 +110,15 @@ app.get('/test', (request, response) => {
 
 app.post('/createGoal', (request, response) => {
   const goalId = uuid();
+  console.log({goalId});
+
   const paramsArray = [goalId];
+  console.log({paramsArray});
+
   console.log(`This is request.body ${JSON.stringify(request.body)}`);
 
   const paramsObject = JSON.stringify(request.body);
+  console.log({paramsObject});
 
   Object.keys(paramsObject).forEach(key => {
     paramsArray.push(paramsObject[key]);
