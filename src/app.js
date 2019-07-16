@@ -115,9 +115,9 @@ app.post('/createGoal', (request, response) => {
   const paramsArray = [goalId];
   console.log({paramsArray});
 
-  console.log(`This is request.body ${JSON.stringify(request.body)}`);
+  console.log(`This is request.body ${request.body}`);
 
-  const paramsObject = JSON.stringify(request.body);
+  const paramsObject = request.body;
   console.log({paramsObject});
 
   Object.keys(paramsObject).forEach(key => {
