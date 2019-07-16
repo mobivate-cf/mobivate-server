@@ -112,7 +112,7 @@ app.post('/createGoal', (request, response) => {
   const goalId = uuid();
   console.log({goalId});
 
-  const paramsArray = [goalId];
+  const paramsArray = [];
   console.log({paramsArray});
 
   console.log(`This is request.body ${request.body}`);
