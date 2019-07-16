@@ -2,9 +2,21 @@
 
 require('dotenv').config();
 
+const pg = require('pg');
 const express = require('express');
 const passport = require('passport');
 const Strategy = require('passport-twitter').Strategy;
+
+const app = express();
+
+const database = new pg.Client(process.env.DATABASE_URL);
+
+database.connect();
+database.on('error', error => console.log(error));
+
+database.query(`SET SCHEMA`)
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 let trustProxy = false;
 if (process.env.DYNO) {
@@ -33,7 +45,6 @@ passport.deserializeUser(function(obj, cb) {
   cb(null, obj);
 });
 
-const app = express();
 app.use(express.static('public'));
 app.use(require('morgan')('combined'));
 app.use(require('body-parser').urlencoded({ extended: true }));
@@ -81,6 +92,10 @@ app.get(
 
 app.get('/dashboard', (request, response) => {
   response.send('Logged in!');
+});
+
+app.post('/createGoal', (request, response) => {
+
 });
 
 app.get('/logout', (request, response) => {
