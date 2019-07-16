@@ -30,3 +30,7 @@ CREATE TABLE progress(
   FOREIGN KEY(progress_user_id) REFERENCES users(user_id),
   FOREIGN KEY(progress_goal_id) REFERENCES goals(goal_id)
 );
+
+INSERT INTO users VALUES (1, 'fozzie', 'the real fozzie', ARRAY['e', 'f', 'g']);
+INSERT INTO goals VALUES (10, 1, 'exercise', 1234567890123, 1234567899123, 'weekly');
+INSERT INTO progress VALUES (100, 1, 10, 8, 4, 9, 1234567890122);

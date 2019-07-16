@@ -7,6 +7,7 @@ const sql = require('./sql');
 const express = require('express');
 const passport = require('passport');
 const Strategy = require('passport-twitter').Strategy;
+const uuid = require('uuid/v4');
 
 const app = express();
 
@@ -102,6 +103,27 @@ app.get('/test', (request, response) => {
       }
       else {
         response.send('Whoops');
+      }
+    })
+    .catch(console.error);
+});
+
+app.post('/createGoal', (request, response) => {
+  const goalId = uuid();
+  const paramsArray = [goalId];
+
+  const paramsObject = [...request.body];
+
+  Object.keys(paramsObject).forEach(key => {
+    paramsArray.push(paramsObject[key]);
+  })
+  return database.query(sql.createGoal, paramsArray)
+    .then(result => {
+      if(result) {
+        response.send(result);
+      }
+      else {
+        response.send('Something went wrong.');
       }
     })
     .catch(console.error);
