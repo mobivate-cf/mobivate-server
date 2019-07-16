@@ -3,7 +3,7 @@
 require('dotenv').config();
 
 const pg = require('pg');
-const sql = require('./sql/sql');
+const sql = require('./sql');
 const express = require('express');
 const passport = require('passport');
 const Strategy = require('passport-twitter').Strategy;
