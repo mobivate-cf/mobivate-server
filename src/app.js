@@ -111,6 +111,7 @@ app.get('/test', (request, response) => {
 app.post('/createGoal', (request, response) => {
   const goalId = uuid();
   const paramsArray = [goalId];
+  console.log(`This is request.body ${request.body}`);
 
   const paramsObject = [...JSON.parse(request.body)];
 
