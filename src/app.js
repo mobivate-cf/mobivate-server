@@ -3,6 +3,7 @@
 require('dotenv').config();
 
 const pg = require('pg');
+const sql = require('./sql/sql');
 const express = require('express');
 const passport = require('passport');
 const Strategy = require('passport-twitter').Strategy;
@@ -14,7 +15,6 @@ const database = new pg.Client(`${process.env.DATABASE_URL}`);
 database.connect();
 database.on('error', error => console.log(error));
 
-database.query(`SET SCHEMA`)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -52,9 +52,6 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: false, save
 
 app.use(passport.initialize());
 // app.use(passport.session());
-
-const sql = {};
-sql.test = `SELECT * FROM users`;
 
 app.get('/login/twitter', passport.authenticate('twitter'), (request, response) => {
   response.send({ hello: 'this is the auth route' });
@@ -101,7 +98,7 @@ app.get('/test', (request, response) => {
   return database.query(sql.test)
     .then(result => {
       if(result) {
-        response.send(result);
+        response.send(result.rows);
       }
       else {
         response.send('Whoops');
