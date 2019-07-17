@@ -2,11 +2,12 @@ module.exports = sql = {
   test: `SELECT * FROM users 
     LEFT JOIN progress ON (users.user_id = progress.progress_user_id) 
     LEFT JOIN goals ON (progress.progress_goal_id = goals.goal_id)`,
-  createUser: `INSERT INTO users 
-  (user_id, display_name, user_handle, auth)
+  createUser: `IF EXISTS(SELECT user_handle FROM users WHERE (user_handle = $3)) THEN
+  UPDATE users (auth) WHERE (user_handle = $3) VALUES ($4)
+  ELSE
+  INSERT INTO users (user_id, display_name, user_handle, auth)
   VALUES ($1, $2, $3, $4)
-    WHERE NOT EXISTS
-      (SELECT user_handle FROM users WHERE (user_handle = $3))`,
+  END IF`,
   createGoal: `INSERT INTO goals 
     (goal_user_id, goal_name, goal_start, goal_end, frequency) 
     VALUES ($1, $2, $3, $4, $5) RETURNING *`,
