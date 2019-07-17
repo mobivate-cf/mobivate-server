@@ -121,13 +121,19 @@ app.post('/createGoal', (request, response) => {
   return database.query(sql.createGoal, paramsArray)
     .then(result => {
       if(result) {
-        response.send(result);
+        const newEntry = result.rows[0];
+        const idsArray = [newEntry.goal_user_id, newEntry.goal_id];
+        database.query(sql.createProgress, idsArray)
       }
       else {
         response.send('Something went wrong.');
       }
     })
+    .then(() => {
+      response.send({message: 'Goal Created!'});
+    })
     .catch(console.error);
+
 });
 
 app.get('/logout', (request, response) => {
