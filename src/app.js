@@ -72,13 +72,12 @@ app.get(
     const savedUserData = buildUserData(request);
     console.log({savedUserData});
     // add to database
-    hashUserData(savedUserData)
-    .then(userDatabaseObject => {
-      console.log({userDatabaseObject})
-      sqlMethods.createUser(userDatabaseObject)
-        .then(result => {
-          response.send(result)
-        })
+    const userDatabaseObject = hashUserData(savedUserData);
+    
+    return sqlMethods.createUser(userDatabaseObject)
+      .then(result => {
+        response.send(result)
+      })
     })
     .catch(console.error);
       
@@ -127,7 +126,7 @@ const buildUserData = (request) => {
   return savedUserData;
 } 
 
-const hashUserData = async (savedUserData) => {
+const hashUserData = (savedUserData) => {
   
   const authJson = JSON.stringify({
     oAuthToken: savedUserData.oAuthToken,
@@ -143,7 +142,7 @@ const hashUserData = async (savedUserData) => {
     auth: encodedAuth
   };
 
-  userDatabaseObject[user_id] = await bcrypt.hash(savedUserData.userId.toString(), SALTS)
+  userDatabaseObject[user_id] = bcrypt.hashSync(savedUserData.userId.toString(), SALTS)
   return userDatabaseObject;
 }
 
