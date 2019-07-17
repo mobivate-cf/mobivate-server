@@ -72,7 +72,7 @@ app.get(
     const savedUserData = buildUserData(request);
     console.log({savedUserData});
     // add to database
-    return hashUserData(savedUserData)
+    hashUserData(savedUserData)
     .then(userDatabaseObject => {
       console.log({userDatabaseObject})
       sqlMethods.createUser(userDatabaseObject)
@@ -127,28 +127,24 @@ const buildUserData = (request) => {
   return savedUserData;
 } 
 
-const hashUserData = (savedUserData) => {
+const hashUserData = async (savedUserData) => {
   
   const authJson = JSON.stringify({
-  oAuthToken: savedUserData.oAuthToken,
-  oAuthTokenSecret: savedUserData.oAuthTokenSecret
-});
+    oAuthToken: savedUserData.oAuthToken,
+    oAuthTokenSecret: savedUserData.oAuthTokenSecret
+  });
 
-const encodedAuth = jsonWebToken.sign(authJson, SECRET);
+  const encodedAuth = jsonWebToken.sign(authJson, SECRET);
 
-const userDatabaseObject = {
-  user_id: '',
-  display_name: savedUserData.userScreenName,
-  user_handle: savedUserData.userName,
-  auth: encodedAuth
-};
+  const userDatabaseObject = {
+    user_id: '',
+    display_name: savedUserData.userScreenName,
+    user_handle: savedUserData.userName,
+    auth: encodedAuth
+  };
 
-bcrypt.hash(savedUserData.userId.toString(), SALTS)
-  .then(hashedUserId => {
-    userDatabaseObject.user_id = hashedUserId;
-    return userDatabaseObject;
-  })
-  .catch(console.error)
+  userDatabaseObject[user_id] = await bcrypt.hash(savedUserData.userId.toString(), SALTS)
+  return userDatabaseObject;
 }
 
 module.exports = {
