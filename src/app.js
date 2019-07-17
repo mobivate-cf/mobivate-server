@@ -2,24 +2,21 @@
 
 require('dotenv').config();
 
-// const pg = require('pg');
 const express = require('express');
 const passport = require('passport');
 const Strategy = require('passport-twitter').Strategy;
 
+const oAuthHelpers = require('./oauth-helpers');
 const sqlMethods = require('./sql/sql-methods');
-const oAuthHelpers = require('./auth');
+
+const SESSION_SECRET = process.env.SESSION_SECRET;
 
 const app = express();
-
-// const database = new pg.Client(`${process.env.DATABASE_URL}`);
-
-// database.connect();
-// database.on('error', error => console.log(error));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//Becky & Chris - This is needed for Heroku deployment.
 let trustProxy = false;
 if (process.env.DYNO) {
   trustProxy = true;
@@ -51,10 +48,9 @@ app.use(express.static('public'));
 app.use(require('morgan')('combined'));
 
 app.use(require('body-parser').urlencoded({ extended: true }));
-app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+app.use(require('express-session')({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }));
 
 app.use(passport.initialize());
-// app.use(passport.session());
 
 app.get(
   '/login/twitter',
@@ -74,6 +70,7 @@ app.get(
 
     return sqlMethods.createUser(userDatabaseObject)
       .then(() => {
+        //Becky & Chris - This link will break if not on one line.
         response.redirect(
           `exp://exp.host/@jagdeepsing_/front-end/?id=${userDatabaseObject.user_id}&display_name=${userDatabaseObject.display_name}&user_name=${userDatabaseObject.user_handle}`
         );

@@ -10,7 +10,8 @@ database.on('error', error => console.log(error));
 
 
 const sqlMethods = {
-
+  
+  //Becky & Chris - The paramsArray is needed to pass the values through the SQL commands dynamically. The data comes to us in an object.
   createGoal: (request, response) => {
   const paramsArray = [];
   const paramsObject = request.body;
@@ -55,7 +56,7 @@ const sqlMethods = {
           response.send(result.rows);
         }
         else {
-          response.send('Whoops');
+          response.sendStatus(400);
         }
       })
       .catch(console.error);

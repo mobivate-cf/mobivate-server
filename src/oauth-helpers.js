@@ -3,10 +3,8 @@
 const bcrypt = require('bcrypt');
 const jsonWebToken = require('jsonwebtoken');
 
-const sql = require('./sql/sql');
-
 const SECRET = process.env.JSONWEBTOKEN_SECRET;
-const SALTS = 12;
+const SALTS = proccess.env.SALTS;
 
 module.exports = {
 
@@ -31,6 +29,7 @@ module.exports = {
   },
 
   hashUserData: (savedUserData) => {
+    //Becky & Chris - These are tracked to permit write permissions on user's behalf.
     const authJson = JSON.stringify({
       oAuthToken: savedUserData.oAuthToken,
       oAuthTokenSecret: savedUserData.oAuthTokenSecret
