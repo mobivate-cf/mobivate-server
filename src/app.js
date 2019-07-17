@@ -89,7 +89,7 @@ app.get(
     };
 
     const bcryptSalt = 12;
-    bcrypt.hash(savedUserData.userId, bcryptSalt)
+    bcrypt.hash(savedUserData.userId.toString(), bcryptSalt)
       .then(hashedUserId => {
         userDatabaseObject.user_id = hashedUserId;
       })
