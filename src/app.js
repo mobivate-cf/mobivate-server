@@ -37,12 +37,16 @@ const app = express();
 app.use(express.static('public'));
 app.use(require('morgan')('combined'));
 app.use(require('body-parser').urlencoded({ extended: true }));
+// TODO: change the secret and move to .env
+// Originally the resave and saveUninitialized were set to true, changing to false didn't seem to affect anything. Look into the docs for how this works
 app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 
 app.use(passport.initialize());
+// TODO: maybe delete
 // app.use(passport.session());
 
 app.get('/login/twitter', passport.authenticate('twitter'), (request, response) => {
+  // this response should never be displayed to user if everything works correctly
   response.send({ hello: 'this is the auth route' });
 });
 
@@ -66,11 +70,8 @@ app.get(
       oAuthTokenSecret: oAuthData.oauth_token_secret,
     };
 
-    // add to database
+    // TODO: add to database
 
-    // send username, displayname and id to frontend
-
-    // response.send(savedUserData);
     response.redirect(
       `exp://exp.host/@melissastock/front-end/?display_name=${savedUserData.userScreenName}&user_name=${
         savedUserData.userName
