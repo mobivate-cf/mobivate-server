@@ -45,7 +45,7 @@ const sqlMethods = {
     Object.keys(userDatabaseObject).forEach(key => {
       paramsArray.push(userDatabaseObject[key]);
     });
-    database.query(sql.createUser, paramsArray)
+    return database.query(sql.createUser, paramsArray)
   },
   
   test: (request, response) => {
