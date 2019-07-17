@@ -135,13 +135,12 @@ const hashUserData = (savedUserData) => {
   const encodedAuth = jsonWebToken.sign(authJson, SECRET);
 
   const userDatabaseObject = {
-    user_id: '',
+    user_id: bcrypt.hashSync(savedUserData.userId.toString(), SALTS),
     display_name: savedUserData.userScreenName,
     user_handle: savedUserData.userName,
     auth: encodedAuth
   };
 
-  userDatabaseObject[user_id] = bcrypt.hashSync(savedUserData.userId.toString(), SALTS)
   return userDatabaseObject;
 }
 
