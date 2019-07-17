@@ -52,9 +52,10 @@ const sqlMethods = {
   getGoals: (request, response) => {
     console.log(request.body);
     response.sendStatus(200);
-    const user_id = [request.body[]]
+    const user_id = [request.body[user_id]]
+    console.log(user_id)
     // return
-    database.query()
+    // database.query()
   },
 
   test: (request, response) => {
