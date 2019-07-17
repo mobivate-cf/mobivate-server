@@ -70,15 +70,18 @@ app.get(
   async (request, response) => {
 
     const savedUserData = buildUserData(request);
-
+    console.log({savedUserData});
     // add to database
-    const userDatabaseObject = await hashUserData(savedUserData);
+    hashUserData(savedUserData)
+    .then(userDatabaseObject => {
+      console.log({userDatabaseObject})
+      sqlMethods.createUser(userDatabaseObject)
+        .then(result => {
+          response.send(result)
+        })
+    })
+    .catch(console.error);
       
-    sqlMethods.createUser(userDatabaseObject)
-      .then(result => {
-        response.send(result)
-      })
-      .catch(console.error);
     // send username, displayname and id to frontend
 
     // response.send(savedUserData);
