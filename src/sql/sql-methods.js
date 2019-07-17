@@ -1,5 +1,7 @@
 'use strict';
 
+const sql = require('./sql');
+
 const sqlMethods = {
 
   createGoal: (request, response) => {
