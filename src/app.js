@@ -2,9 +2,22 @@
 
 require('dotenv').config();
 
+const pg = require('pg');
+const sql = require('./sql');
 const express = require('express');
 const passport = require('passport');
 const Strategy = require('passport-twitter').Strategy;
+const uuid = require('uuid/v4');
+
+const app = express();
+
+const database = new pg.Client(`${process.env.DATABASE_URL}`);
+
+database.connect();
+database.on('error', error => console.log(error));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 let trustProxy = false;
 if (process.env.DYNO) {
@@ -33,7 +46,6 @@ passport.deserializeUser(function(obj, cb) {
   cb(null, obj);
 });
 
-const app = express();
 app.use(express.static('public'));
 app.use(require('morgan')('combined'));
 app.use(require('body-parser').urlencoded({ extended: true }));
@@ -82,6 +94,51 @@ app.get(
 
 app.get('/dashboard', (request, response) => {
   response.send('Logged in!');
+});
+
+app.get('/test', (request, response) => {
+  return database.query(sql.test)
+    .then(result => {
+      if(result) {
+        response.send(result.rows);
+      }
+      else {
+        response.send('Whoops');
+      }
+    })
+    .catch(console.error);
+});
+
+app.post('/createGoal', (request, response) => {
+
+  const paramsArray = [];
+
+  const paramsObject = request.body;
+
+  Object.keys(paramsObject).forEach(key => {
+    paramsArray.push(paramsObject[key]);
+  });
+
+  let newEntry;
+  let idsArray;
+  return database.query(sql.createGoal, paramsArray)
+    .then(result => {
+      if(result) {
+        newEntry = result.rows[0];
+        idsArray = [newEntry.goal_user_id, newEntry.goal_id];
+      }
+      else {
+        response.send('Something went wrong.');
+      }
+    })
+    .then(() => {
+      database.query(sql.createProgress, idsArray)
+    })
+    .then(() => {
+      response.send({message: 'Goal Created!'});
+    })
+    .catch(console.error);
+
 });
 
 app.get('/logout', (request, response) => {
