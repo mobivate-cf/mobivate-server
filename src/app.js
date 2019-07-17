@@ -8,6 +8,8 @@ const express = require('express');
 const passport = require('passport');
 const Strategy = require('passport-twitter').Strategy;
 const uuid = require('uuid/v4');
+const bcrypt = require('bcrypt');
+const jsonWebToken = require('jsonwebtoken');
 
 const app = express();
 
@@ -79,15 +81,38 @@ app.get(
     };
 
     // add to database
+    const userDatabaseObject = {
+      user_id: '',
+      display_name: savedUserData.userScreenName,
+      user_handle: savedUserData.userName,
+      auth: ['','','']
+    };
+
+    const bcryptSalt = 12;
+    bcrypt.hash(savedUserData.userId, bcryptSalt)
+      .then(hashedUserId => {
+        userDatabaseObject.user_id = hashedUserId;
+      })
+      .then(() => {
+        let paramsArray = [];
+        Object.keys(userDatabaseObject).forEach(key => {
+          paramsArray.push(userDatabaseObject[key]);
+        });
+        database.query(sql.createUser, paramsArray)
+      })
+      .then((databaseResults) => {
+        response.send(databaseResults);
+      })
+      .catch(console.error) // TODO: handle catch error
 
     // send username, displayname and id to frontend
 
     // response.send(savedUserData);
-    response.redirect(
-      `exp://exp.host/@melissastock/front-end/?display_name=${savedUserData.userScreenName}&user_name=${
-        savedUserData.userName
-      }&id=${savedUserData.userId}`
-    );
+    // response.redirect(
+    //   `exp://exp.host/@melissastock/front-end/?display_name=${savedUserData.userScreenName}&user_name=${
+    //     savedUserData.userName
+    //   }&id=${savedUserData.userId}`
+    // );
   }
 );
 
