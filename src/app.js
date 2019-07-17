@@ -70,24 +70,18 @@ app.get(
   (request, response) => {
 
     const savedUserData = buildUserData(request);
-    console.log({savedUserData});
+
     // add to database
     const userDatabaseObject = hashUserData(savedUserData);
-    console.log({userDatabaseObject});
+
     return sqlMethods.createUser(userDatabaseObject)
       .then(result => {
         response.send(result)
+        response.redirect(
+            `exp://exp.host/@jagdeepsing_/front-end/?id=${userDatabaseObject.user_id}&display_name=${userDatabaseObject.display_name}&user_name=${userDatabaseObject.user_handle}`
+          );
       })
-    .catch(console.error);
-      
-    // send username, displayname and id to frontend
-
-    // response.send(savedUserData);
-    // response.redirect(
-    //   `exp://exp.host/@melissastock/front-end/?display_name=${savedUserData.userScreenName}&user_name=${
-    //     savedUserData.userName
-    //   }&id=${savedUserData.userId}`
-    // );
+      .catch(console.error);
   }
 );
 
