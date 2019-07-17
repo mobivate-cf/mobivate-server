@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jsonWebToken = require('jsonwebtoken');
 
 const SECRET = process.env.JSONWEBTOKEN_SECRET;
-const SALTS = process.env.SALTS;
+const SALTS = parseInt(process.env.SALTS);
 
 module.exports = {
 
