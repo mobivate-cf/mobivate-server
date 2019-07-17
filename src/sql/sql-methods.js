@@ -49,6 +49,14 @@ const sqlMethods = {
     return database.query(sql.createUser, paramsArray)
   },
   
+  getGoals: (request, response) => {
+    console.log(request.body);
+    response.sendStatus(200);
+    const user_id = [request.body[]]
+    // return
+    database.query()
+  },
+
   test: (request, response) => {
     return database.query(sql.test)
       .then(result => {
