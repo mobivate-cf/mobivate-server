@@ -6,7 +6,7 @@ CREATE TABLE users(
   user_id TEXT PRIMARY KEY,
   display_name VARCHAR(255),
   user_handle VARCHAR(255),
-  auth VARCHAR(255),
+  auth VARCHAR(255)
 );
 
 CREATE TABLE goals(

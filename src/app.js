@@ -12,6 +12,7 @@ const bcrypt = require('bcrypt');
 const jsonWebToken = require('jsonwebtoken');
 
 const SECRET = process.env.JSONWEBTOKEN_SECRET;
+const SALTS = process.env.SALTS;
 const app = express();
 
 const database = new pg.Client(`${process.env.DATABASE_URL}`);
@@ -22,18 +23,13 @@ database.on('error', error => console.log(error));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-let trustProxy = false;
-if (process.env.DYNO) {
-  trustProxy = true;
-}
-
 passport.use(
   new Strategy(
     {
       consumerKey: process.env.TWITTER_CONSUMER_KEY,
       consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
       callbackURL: '/oauth/callback',
-      proxy: trustProxy,
+      proxy: false,
     },
     function(token, tokenSecret, profile, cb) {
       return cb(null, profile);
@@ -95,9 +91,8 @@ app.get(
       user_handle: savedUserData.userName,
       auth: encodedAuth
     };
-
-    const bcryptSalt = 12;
-    bcrypt.hash(savedUserData.userId.toString(), bcryptSalt)
+ 
+    bcrypt.hash(savedUserData.userId.toString(), SALTS)
       .then(hashedUserId => {
         userDatabaseObject.user_id = hashedUserId;
       })
