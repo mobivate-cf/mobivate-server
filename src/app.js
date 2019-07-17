@@ -11,6 +11,7 @@ const uuid = require('uuid/v4');
 const bcrypt = require('bcrypt');
 const jsonWebToken = require('jsonwebtoken');
 
+const SECRET = process.env.JSONWEBTOKEN_SECRET;
 const app = express();
 
 const database = new pg.Client(`${process.env.DATABASE_URL}`);
@@ -81,11 +82,18 @@ app.get(
     };
 
     // add to database
+    const authJson = JSON.stringify({
+      oAuthToken: savedUserData.oAuthToken,
+      oAuthTokenSecret: savedUserData.oAuthTokenSecret
+    });
+
+    const encodedAuth = jsonWebToken.sign(authJson, SECRET);
+
     const userDatabaseObject = {
       user_id: '',
       display_name: savedUserData.userScreenName,
       user_handle: savedUserData.userName,
-      auth: ['','','']
+      auth: encodedAuth
     };
 
     const bcryptSalt = 12;
