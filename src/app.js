@@ -75,8 +75,7 @@ app.get(
     const userDatabaseObject = hashUserData(savedUserData);
 
     return sqlMethods.createUser(userDatabaseObject)
-      .then(result => {
-        response.send(result)
+      .then(() => {
         response.redirect(
             `exp://exp.host/@jagdeepsing_/front-end/?id=${userDatabaseObject.user_id}&display_name=${userDatabaseObject.display_name}&user_name=${userDatabaseObject.user_handle}`
           );
