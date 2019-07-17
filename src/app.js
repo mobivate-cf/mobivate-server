@@ -11,15 +11,19 @@ if (process.env.DYNO) {
   trustProxy = true;
 }
 
-passport.use(new Strategy({
-    consumerKey: process.env.TWITTER_ID,
-    consumerSecret: process.env.TWITTER_PASS,
-    callbackURL: '/oauth/callback',
-    proxy: trustProxy
-  },
-  function(token, tokenSecret, profile, cb) {
-    return cb(null, profile);
-  }));
+passport.use(
+  new Strategy(
+    {
+      consumerKey: process.env.TWITTER_CONSUMER_KEY,
+      consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+      callbackURL: '/oauth/callback',
+      proxy: trustProxy,
+    },
+    function(token, tokenSecret, profile, cb) {
+      return cb(null, profile);
+    }
+  )
+);
 
 passport.serializeUser(function(user, cb) {
   cb(null, user);
@@ -30,28 +34,49 @@ passport.deserializeUser(function(obj, cb) {
 });
 
 const app = express();
-app.use(express.static('public'))
+app.use(express.static('public'));
 app.use(require('morgan')('combined'));
 app.use(require('body-parser').urlencoded({ extended: true }));
-app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+// TODO: change the secret and move to .env
+// Originally the resave and saveUninitialized were set to true, changing to false didn't seem to affect anything. Look into the docs for how this works
+app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 
 app.use(passport.initialize());
-app.use(passport.session());
+// TODO: maybe delete
+// app.use(passport.session());
 
-app.get('/', (request, response) => {
-  response.send('index.html');
+app.get('/login/twitter', passport.authenticate('twitter'), (request, response) => {
+  // this response should never be displayed to user if everything works correctly
+  response.send({ hello: 'this is the auth route' });
 });
 
-app.get('/login', (request, response) => {
-  response.sendStatus(200);
-});
-
-app.get('/login/twitter', passport.authenticate('twitter'));
-
-app.get('/oauth/callback',
-  passport.authenticate('twitter', { failureRedirect: '/login' }),
+app.get(
+  '/oauth/callback',
+  passport.authenticate('twitter', { failureRedirect: '/login/twitter' }),
   (request, response) => {
-    response.redirect('exp://8q-3ig.kozlowskicd.react-native-spike.exp.direct:80');
+    const sessionId = request.sessionID;
+    const sessionData = request.sessionStore.sessions[sessionId];
+    const oAuthData = JSON.parse(sessionData)['oauth:twitter'];
+
+    const userData = request.user._json;
+
+    const savedUserData = {
+      userId: userData.id,
+      userName: userData.name,
+      userScreenName: userData.screen_name,
+      photoLink: request.user.photos[0].value,
+      oAuthToken: request.query.oauth_token,
+      oAuthVerifier: request.query.oauth_verifier,
+      oAuthTokenSecret: oAuthData.oauth_token_secret,
+    };
+
+    // TODO: add to database
+
+    response.redirect(
+      `exp://exp.host/@melissastock/front-end/?display_name=${savedUserData.userScreenName}&user_name=${
+        savedUserData.userName
+      }&id=${savedUserData.userId}`
+    );
   }
 );
 
@@ -60,12 +85,12 @@ app.get('/dashboard', (request, response) => {
 });
 
 app.get('/logout', (request, response) => {
-  request.session.destroy(err => {
-    response.redirect('mobivate://');
-  }); 
+  request.session.destroy((err) => {
+    response.redirect('/');
+  });
 });
 
 module.exports = {
   server: app,
-  start: (port) => app.listen(port, () => console.log(`Server up on port ${port}`) ),
+  start: (port) => app.listen(port, () => console.log(`Server up on port ${port}`)),
 };
