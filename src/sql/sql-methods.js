@@ -1,6 +1,13 @@
 'use strict';
 
+const pg = require('pg');
 const sql = require('./sql');
+
+const database = new pg.Client(`${process.env.DATABASE_URL}`);
+
+database.connect();
+database.on('error', error => console.log(error));
+
 
 const sqlMethods = {
 
