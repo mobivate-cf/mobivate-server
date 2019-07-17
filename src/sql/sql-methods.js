@@ -35,7 +35,7 @@ const sqlMethods = {
     .catch(console.error);
   },
 
-  createUser: (request, response) => {
+  createUser: (userDatabaseObject) => {
     let paramsArray = [];
     Object.keys(userDatabaseObject).forEach(key => {
       paramsArray.push(userDatabaseObject[key]);
