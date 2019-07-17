@@ -38,7 +38,7 @@ module.exports = {
     const encodedAuth = jsonWebToken.sign(authJson, SECRET);
 
     const userDatabaseObject = {
-      user_id: bcrypt.hashSync(savedUserData.userId.toString(), NUMBER_OF_SALTS),
+      user_id: savedUserData.userId,
       display_name: savedUserData.userScreenName,
       user_handle: savedUserData.userName,
       auth: encodedAuth
