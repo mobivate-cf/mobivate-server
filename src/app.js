@@ -109,20 +109,15 @@ app.get('/test', (request, response) => {
 });
 
 app.post('/createGoal', (request, response) => {
-  const goalId = uuid();
-  console.log({goalId});
 
   const paramsArray = [];
-  console.log({paramsArray});
-
-  console.log(`This is request.body ${request.body}`);
 
   const paramsObject = request.body;
-  console.log({paramsObject});
 
   Object.keys(paramsObject).forEach(key => {
     paramsArray.push(paramsObject[key]);
-  })
+  });
+
   return database.query(sql.createGoal, paramsArray)
     .then(result => {
       if(result) {
