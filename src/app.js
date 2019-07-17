@@ -97,7 +97,7 @@ app.get(
     bcrypt.hash(savedUserData.userId.toString(), SALTS)
       .then(hashedUserId => {
         userDatabaseObject.user_id = hashedUserId;
-        sql.createUser(request, response)
+        sqlMethods.createUser(request, response)
       })
       .then((databaseResults) => {
         response.send(databaseResults);
