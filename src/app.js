@@ -118,16 +118,20 @@ app.post('/createGoal', (request, response) => {
     paramsArray.push(paramsObject[key]);
   });
 
+  let newEntry;
+  let idsArray;
   return database.query(sql.createGoal, paramsArray)
     .then(result => {
       if(result) {
-        const newEntry = result.rows[0];
-        const idsArray = [newEntry.goal_user_id, newEntry.goal_id];
-        database.query(sql.createProgress, idsArray)
+        newEntry = result.rows[0];
+        idsArray = [newEntry.goal_user_id, newEntry.goal_id];
       }
       else {
         response.send('Something went wrong.');
       }
+    })
+    .then(() => {
+      database.query(sql.createProgress, idsArray)
     })
     .then(() => {
       response.send({message: 'Goal Created!'});
