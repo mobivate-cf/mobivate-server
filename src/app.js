@@ -3,13 +3,15 @@
 require('dotenv').config();
 
 const pg = require('pg');
-const sql = require('./sql');
 const express = require('express');
 const passport = require('passport');
 const Strategy = require('passport-twitter').Strategy;
 const uuid = require('uuid/v4');
 const bcrypt = require('bcrypt');
 const jsonWebToken = require('jsonwebtoken');
+
+const sql = require('./sql/sql');
+const sqlMethods = require('./sql/sql-methods');
 
 const SECRET = process.env.JSONWEBTOKEN_SECRET;
 const SALTS = process.env.SALTS;
@@ -95,13 +97,7 @@ app.get(
     bcrypt.hash(savedUserData.userId.toString(), SALTS)
       .then(hashedUserId => {
         userDatabaseObject.user_id = hashedUserId;
-      })
-      .then(() => {
-        let paramsArray = [];
-        Object.keys(userDatabaseObject).forEach(key => {
-          paramsArray.push(userDatabaseObject[key]);
-        });
-        database.query(sql.createUser, paramsArray)
+        sql.createUser(request, response)
       })
       .then((databaseResults) => {
         response.send(databaseResults);
@@ -136,37 +132,7 @@ app.get('/test', (request, response) => {
     .catch(console.error);
 });
 
-app.post('/createGoal', (request, response) => {
-
-  const paramsArray = [];
-
-  const paramsObject = request.body;
-
-  Object.keys(paramsObject).forEach(key => {
-    paramsArray.push(paramsObject[key]);
-  });
-
-  let newEntry;
-  let idsArray;
-  return database.query(sql.createGoal, paramsArray)
-    .then(result => {
-      if(result) {
-        newEntry = result.rows[0];
-        idsArray = [newEntry.goal_user_id, newEntry.goal_id];
-      }
-      else {
-        response.send('Something went wrong.');
-      }
-    })
-    .then(() => {
-      database.query(sql.createProgress, idsArray)
-    })
-    .then(() => {
-      response.send({message: 'Goal Created!'});
-    })
-    .catch(console.error);
-
-});
+app.post('/createGoal', sqlMethods.createGoal);
 
 app.get('/logout', (request, response) => {
   request.session.destroy((err) => {
