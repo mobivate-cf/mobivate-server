@@ -97,7 +97,13 @@ app.get(
     bcrypt.hash(savedUserData.userId.toString(), SALTS)
       .then(hashedUserId => {
         userDatabaseObject.user_id = hashedUserId;
-        sqlMethods.createUser(userDatabaseObject)
+      })
+      .then(() => {
+        let paramsArray = [];
+        Object.keys(userDatabaseObject).forEach(key => {
+          paramsArray.push(userDatabaseObject[key]);
+        });
+        database.query(sql.createUser, paramsArray)
       })
       .then((databaseResults) => {
         response.send(databaseResults);
