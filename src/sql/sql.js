@@ -5,9 +5,9 @@ module.exports = sql = {
   createUser: `
   INSERT INTO users (user_id, display_name, user_handle, auth)
   VALUES ($1, $2, $3, $4)
-  WHERE NOT EXISTS (SELECT user_id FROM users WHERE users.user_id = $1)
-  UPDATE users SET auth = $4 WHERE users.user_id = $1
-  WHERE EXISTS (SELECT user_id FROM users WHERE users.user_id = $1)`,
+  ON CONFLICT (user_id) DO UPDATE
+    SET auth = $4
+  `,
   createGoal: `INSERT INTO goals 
     (goal_user_id, goal_name, goal_start, goal_end, frequency) 
     VALUES ($1, $2, $3, $4, $5) RETURNING *`,
