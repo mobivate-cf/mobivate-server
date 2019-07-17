@@ -75,10 +75,7 @@ app.get(
     return sqlMethods.createUser(userDatabaseObject)
       .then(() => {
         response.redirect(
-          `exp://exp.host/@jagdeepsing_/front-end/?
-            id=${userDatabaseObject.user_id}&
-            display_name=${userDatabaseObject.display_name}&
-            user_name=${userDatabaseObject.user_handle}`
+          `exp://exp.host/@jagdeepsing_/front-end/?id=${userDatabaseObject.user_id}&display_name=${userDatabaseObject.display_name}&user_name=${userDatabaseObject.user_handle}`
         );
       })
       .catch(console.error);
