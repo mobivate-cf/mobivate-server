@@ -67,12 +67,12 @@ app.get('/login/twitter', passport.authenticate('twitter'), (request, response) 
 app.get(
   '/oauth/callback',
   passport.authenticate('twitter', { failureRedirect: '/login/twitter' }),
-  async (request, response) => {
+  (request, response) => {
 
     const savedUserData = buildUserData(request);
     console.log({savedUserData});
     // add to database
-    hashUserData(savedUserData)
+    return hashUserData(savedUserData)
     .then(userDatabaseObject => {
       console.log({userDatabaseObject})
       sqlMethods.createUser(userDatabaseObject)
