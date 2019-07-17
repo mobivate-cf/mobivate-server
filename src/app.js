@@ -14,7 +14,7 @@ const sql = require('./sql/sql');
 const sqlMethods = require('./sql/sql-methods');
 
 const SECRET = process.env.JSONWEBTOKEN_SECRET;
-const SALTS = process.env.SALTS;
+const SALTS = 12;
 const app = express();
 
 const database = new pg.Client(`${process.env.DATABASE_URL}`);
@@ -25,13 +25,18 @@ database.on('error', error => console.log(error));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+let trustProxy = false;
+if (process.env.DYNO) {
+  trustProxy = true;
+}
+
 passport.use(
   new Strategy(
     {
       consumerKey: process.env.TWITTER_CONSUMER_KEY,
       consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
       callbackURL: '/oauth/callback',
-      proxy: false,
+      proxy: trustProxy,
     },
     function(token, tokenSecret, profile, cb) {
       return cb(null, profile);
@@ -99,11 +104,7 @@ app.get(
         userDatabaseObject.user_id = hashedUserId;
       })
       .then(() => {
-        let paramsArray = [];
-        Object.keys(userDatabaseObject).forEach(key => {
-          paramsArray.push(userDatabaseObject[key]);
-        });
-        database.query(sql.createUser, paramsArray)
+        sqlMethods.createUser(userDatabaseObject);
       })
       .then((databaseResults) => {
         response.send(databaseResults);
