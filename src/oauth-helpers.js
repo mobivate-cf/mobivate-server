@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jsonWebToken = require('jsonwebtoken');
 
 const SECRET = process.env.JSONWEBTOKEN_SECRET;
-const SALTS = parseInt(process.env.SALTS);
+const NUMBER_OF_SALTS = parseInt(process.env.NUMBER_OF_SALTS);
 
 module.exports = {
 
@@ -38,7 +38,7 @@ module.exports = {
     const encodedAuth = jsonWebToken.sign(authJson, SECRET);
 
     const userDatabaseObject = {
-      user_id: bcrypt.hashSync(savedUserData.userId.toString(), SALTS),
+      user_id: bcrypt.hashSync(savedUserData.userId.toString(), NUMBER_OF_SALTS),
       display_name: savedUserData.userScreenName,
       user_handle: savedUserData.userName,
       auth: encodedAuth
