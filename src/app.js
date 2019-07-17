@@ -73,12 +73,11 @@ app.get(
     console.log({savedUserData});
     // add to database
     const userDatabaseObject = hashUserData(savedUserData);
-    
+    console.log({userDatabaseObject});
     return sqlMethods.createUser(userDatabaseObject)
       .then(result => {
         response.send(result)
       })
-    })
     .catch(console.error);
       
     // send username, displayname and id to frontend
