@@ -2,25 +2,20 @@
 
 require('dotenv').config();
 
-const pg = require('pg');
+// const pg = require('pg');
 const express = require('express');
 const passport = require('passport');
 const Strategy = require('passport-twitter').Strategy;
-const uuid = require('uuid/v4');
-const bcrypt = require('bcrypt');
-const jsonWebToken = require('jsonwebtoken');
 
-const sql = require('./sql/sql');
 const sqlMethods = require('./sql/sql-methods');
+const oAuthHelpers = require('./auth');
 
-const SECRET = process.env.JSONWEBTOKEN_SECRET;
-const SALTS = 12;
 const app = express();
 
-const database = new pg.Client(`${process.env.DATABASE_URL}`);
+// const database = new pg.Client(`${process.env.DATABASE_URL}`);
 
-database.connect();
-database.on('error', error => console.log(error));
+// database.connect();
+// database.on('error', error => console.log(error));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -54,14 +49,18 @@ passport.deserializeUser(function(obj, cb) {
 
 app.use(express.static('public'));
 app.use(require('morgan')('combined'));
+
 app.use(require('body-parser').urlencoded({ extended: true }));
 app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 
 app.use(passport.initialize());
 // app.use(passport.session());
 
-app.get('/login/twitter', passport.authenticate('twitter'), (request, response) => {
-  response.send({ hello: 'this is the auth route' });
+app.get(
+  '/login/twitter',
+  passport.authenticate('twitter'),
+  (request, response) => {
+  response.send({ eroor: 'Error logging into Twitter' });
 });
 
 app.get(
@@ -69,16 +68,18 @@ app.get(
   passport.authenticate('twitter', { failureRedirect: '/login/twitter' }),
   (request, response) => {
 
-    const savedUserData = buildUserData(request);
+    const savedUserData = oAuthHelpers.buildUserData(request);
 
-    // add to database
-    const userDatabaseObject = hashUserData(savedUserData);
+    const userDatabaseObject = oAuthHelpers.hashUserData(savedUserData);
 
     return sqlMethods.createUser(userDatabaseObject)
       .then(() => {
         response.redirect(
-            `exp://exp.host/@jagdeepsing_/front-end/?id=${userDatabaseObject.user_id}&display_name=${userDatabaseObject.display_name}&user_name=${userDatabaseObject.user_handle}`
-          );
+          `exp://exp.host/@jagdeepsing_/front-end/?
+            id=${userDatabaseObject.user_id}&
+            display_name=${userDatabaseObject.display_name}&
+            user_name=${userDatabaseObject.user_handle}`
+        );
       })
       .catch(console.error);
   }
@@ -93,49 +94,10 @@ app.get('/test', sqlMethods.test);
 app.post('/createGoal', sqlMethods.createGoal);
 
 app.get('/logout', (request, response) => {
-  request.session.destroy((err) => {
+  request.session.destroy(() => {
     response.redirect('/');
   });
 });
-
-const buildUserData = (request) => {
-  const sessionId = request.sessionID;
-  const sessionData = request.sessionStore.sessions[sessionId];
-  const oAuthData = JSON.parse(sessionData)['oauth:twitter'];
-  
-  const userData = request.user._json;
-  
-  const savedUserData = {
-    userId: userData.id,
-    userName: userData.name,
-    userScreenName: userData.screen_name,
-    photoLink: request.user.photos[0].value,
-    oAuthToken: request.query.oauth_token,
-    oAuthVerifier: request.query.oauth_verifier,
-    oAuthTokenSecret: oAuthData.oauth_token_secret,
-  };
-
-  return savedUserData;
-} 
-
-const hashUserData = (savedUserData) => {
-  
-  const authJson = JSON.stringify({
-    oAuthToken: savedUserData.oAuthToken,
-    oAuthTokenSecret: savedUserData.oAuthTokenSecret
-  });
-
-  const encodedAuth = jsonWebToken.sign(authJson, SECRET);
-
-  const userDatabaseObject = {
-    user_id: bcrypt.hashSync(savedUserData.userId.toString(), SALTS),
-    display_name: savedUserData.userScreenName,
-    user_handle: savedUserData.userName,
-    auth: encodedAuth
-  };
-
-  return userDatabaseObject;
-}
 
 module.exports = {
   server: app,
