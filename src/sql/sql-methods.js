@@ -12,9 +12,7 @@ database.on('error', error => console.log(error));
 const sqlMethods = {
 
   createGoal: (request, response) => {
-
   const paramsArray = [];
-
   const paramsObject = request.body;
 
   Object.keys(paramsObject).forEach(key => {
@@ -49,7 +47,19 @@ const sqlMethods = {
     });
     database.query(sql.createUser, paramsArray)
   },
-
+  
+  test: (request, response) => {
+    return database.query(sql.test)
+      .then(result => {
+        if(result) {
+          response.send(result.rows);
+        }
+        else {
+          response.send('Whoops');
+        }
+      })
+      .catch(console.error);
+  }
 };
 
 module.exports = sqlMethods;

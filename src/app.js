@@ -126,18 +126,7 @@ app.get('/dashboard', (request, response) => {
   response.send('Logged in!');
 });
 
-app.get('/test', (request, response) => {
-  return database.query(sql.test)
-    .then(result => {
-      if(result) {
-        response.send(result.rows);
-      }
-      else {
-        response.send('Whoops');
-      }
-    })
-    .catch(console.error);
-});
+app.get('/test', sqlMethods.test);
 
 app.post('/createGoal', sqlMethods.createGoal);
 
