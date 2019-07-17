@@ -67,50 +67,18 @@ app.get('/login/twitter', passport.authenticate('twitter'), (request, response) 
 app.get(
   '/oauth/callback',
   passport.authenticate('twitter', { failureRedirect: '/login/twitter' }),
-  (request, response) => {
-    const sessionId = request.sessionID;
-    const sessionData = request.sessionStore.sessions[sessionId];
-    const oAuthData = JSON.parse(sessionData)['oauth:twitter'];
+  async (request, response) => {
 
-    const userData = request.user._json;
-
-    const savedUserData = {
-      userId: userData.id,
-      userName: userData.name,
-      userScreenName: userData.screen_name,
-      photoLink: request.user.photos[0].value,
-      oAuthToken: request.query.oauth_token,
-      oAuthVerifier: request.query.oauth_verifier,
-      oAuthTokenSecret: oAuthData.oauth_token_secret,
-    };
+    const savedUserData = buildUserData(request);
 
     // add to database
-    const authJson = JSON.stringify({
-      oAuthToken: savedUserData.oAuthToken,
-      oAuthTokenSecret: savedUserData.oAuthTokenSecret
-    });
-
-    const encodedAuth = jsonWebToken.sign(authJson, SECRET);
-
-    const userDatabaseObject = {
-      user_id: '',
-      display_name: savedUserData.userScreenName,
-      user_handle: savedUserData.userName,
-      auth: encodedAuth
-    };
- 
-    bcrypt.hash(savedUserData.userId.toString(), SALTS)
-      .then(hashedUserId => {
-        userDatabaseObject.user_id = hashedUserId;
+    const userDatabaseObject = await hashUserData(savedUserData);
+      
+    sqlMethods.createUser(userDatabaseObject)
+      .then(result => {
+        response.send(result)
       })
-      .then(() => {
-        sqlMethods.createUser(userDatabaseObject);
-      })
-      .then((databaseResults) => {
-        response.send(databaseResults);
-      })
-      .catch(console.error) // TODO: handle catch error
-
+      .catch(console.error);
     // send username, displayname and id to frontend
 
     // response.send(savedUserData);
@@ -135,6 +103,50 @@ app.get('/logout', (request, response) => {
     response.redirect('/');
   });
 });
+
+const buildUserData = (request) => {
+  const sessionId = request.sessionID;
+  const sessionData = request.sessionStore.sessions[sessionId];
+  const oAuthData = JSON.parse(sessionData)['oauth:twitter'];
+  
+  const userData = request.user._json;
+  
+  const savedUserData = {
+    userId: userData.id,
+    userName: userData.name,
+    userScreenName: userData.screen_name,
+    photoLink: request.user.photos[0].value,
+    oAuthToken: request.query.oauth_token,
+    oAuthVerifier: request.query.oauth_verifier,
+    oAuthTokenSecret: oAuthData.oauth_token_secret,
+  };
+
+  return savedUserData;
+} 
+
+const hashUserData = (savedUserData) => {
+  
+  const authJson = JSON.stringify({
+  oAuthToken: savedUserData.oAuthToken,
+  oAuthTokenSecret: savedUserData.oAuthTokenSecret
+});
+
+const encodedAuth = jsonWebToken.sign(authJson, SECRET);
+
+const userDatabaseObject = {
+  user_id: '',
+  display_name: savedUserData.userScreenName,
+  user_handle: savedUserData.userName,
+  auth: encodedAuth
+};
+
+bcrypt.hash(savedUserData.userId.toString(), SALTS)
+  .then(hashedUserId => {
+    userDatabaseObject.user_id = hashedUserId;
+    return userDatabaseObject;
+  })
+  .catch(console.error)
+}
 
 module.exports = {
   server: app,
