@@ -54,7 +54,10 @@ const sqlMethods = {
     console.log({body: request.body});
     const user_id = ['12345'];
     database.query(sql.getGoals, user_id)
-      .then(response.send())
+      .then(result => {
+        console.log(result);
+        response.send(result)
+      });
     // return
     // database.query()
   },
