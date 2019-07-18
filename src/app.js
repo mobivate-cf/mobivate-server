@@ -7,7 +7,7 @@ const passport = require('passport');
 const Strategy = require('passport-twitter').Strategy;
 
 const oAuthHelpers = require('./oauth-helpers');
-const sqlMethods = require('./sql/sql-methods');
+const sqlMethods = require('./sql/sql-methods').sqlMethods;
 
 const SESSION_SECRET = process.env.SESSION_SECRET;
 
@@ -96,6 +96,7 @@ app.get('/logout', (request, response) => {
 });
 
 module.exports = {
+  passport: passport, //for testing
   server: app,
   start: (port) => app.listen(port, () => console.log(`Server up on port ${port}`)),
 };

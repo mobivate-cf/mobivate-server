@@ -3,12 +3,13 @@
 const bcrypt = require('bcrypt');
 const jsonWebToken = require('jsonwebtoken');
 
-const SECRET = process.env.JSONWEBTOKEN_SECRET;
+const SECRET = process.env.JSONWEBTOKEN_SECRET || 'fortesting';
 const NUMBER_OF_SALTS = parseInt(process.env.NUMBER_OF_SALTS);
 
 module.exports = {
 
   buildUserData: (request) => {
+    console.log(request)
     const sessionId = request.sessionID;
     const sessionData = request.sessionStore.sessions[sessionId];
     const oAuthData = JSON.parse(sessionData)['oauth:twitter'];
