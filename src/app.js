@@ -2,23 +2,21 @@
 
 require('dotenv').config();
 
-const pg = require('pg');
-const sql = require('./sql');
 const express = require('express');
 const passport = require('passport');
 const Strategy = require('passport-twitter').Strategy;
-const uuid = require('uuid/v4');
+
+const oAuthHelpers = require('./oauth-helpers');
+const sqlMethods = require('./sql/sql-methods');
+
+const SESSION_SECRET = process.env.SESSION_SECRET;
 
 const app = express();
-
-const database = new pg.Client(`${process.env.DATABASE_URL}`);
-
-database.connect();
-database.on('error', error => console.log(error));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//Becky & Chris - This is needed for Heroku deployment.
 let trustProxy = false;
 if (process.env.DYNO) {
   trustProxy = true;
@@ -48,47 +46,38 @@ passport.deserializeUser(function(obj, cb) {
 
 app.use(express.static('public'));
 app.use(require('morgan')('combined'));
+
 app.use(require('body-parser').urlencoded({ extended: true }));
-// TODO: change the secret and move to .env
-// Originally the resave and saveUninitialized were set to true, changing to false didn't seem to affect anything. Look into the docs for how this works
-app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+
+app.use(require('express-session')({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }));
 
 app.use(passport.initialize());
-// TODO: maybe delete
-// app.use(passport.session());
 
-app.get('/login/twitter', passport.authenticate('twitter'), (request, response) => {
-  // this response should never be displayed to user if everything works correctly
-  response.send({ hello: 'this is the auth route' });
+app.get(
+  '/login/twitter',
+  passport.authenticate('twitter'),
+  (request, response) => {
+  response.send({ eroor: 'Error logging into Twitter' });
+
 });
 
 app.get(
   '/oauth/callback',
   passport.authenticate('twitter', { failureRedirect: '/login/twitter' }),
   (request, response) => {
-    const sessionId = request.sessionID;
-    const sessionData = request.sessionStore.sessions[sessionId];
-    const oAuthData = JSON.parse(sessionData)['oauth:twitter'];
 
-    const userData = request.user._json;
+    const savedUserData = oAuthHelpers.buildUserData(request);
 
-    const savedUserData = {
-      userId: userData.id,
-      userName: userData.name,
-      userScreenName: userData.screen_name,
-      photoLink: request.user.photos[0].value,
-      oAuthToken: request.query.oauth_token,
-      oAuthVerifier: request.query.oauth_verifier,
-      oAuthTokenSecret: oAuthData.oauth_token_secret,
-    };
+    const userDatabaseObject = oAuthHelpers.hashUserData(savedUserData);
 
-    // TODO: add to database
-
-    response.redirect(
-      `exp://exp.host/@melissastock/front-end/?display_name=${savedUserData.userScreenName}&user_name=${
-        savedUserData.userName
-      }&id=${savedUserData.userId}`
-    );
+    return sqlMethods.createUser(userDatabaseObject)
+      .then(() => {
+        //Becky & Chris - This link will break if not on one line.
+          response.redirect(
+            `exp://74-3er.jagdeepsing.front-end.exp.direct:80/?id=${userDatabaseObject.user_id}&display_name=${userDatabaseObject.display_name}&user_name=${userDatabaseObject.user_handle}`
+          );
+      })
+      .catch(console.error);
   }
 );
 
@@ -96,53 +85,14 @@ app.get('/dashboard', (request, response) => {
   response.send('Logged in!');
 });
 
-app.get('/test', (request, response) => {
-  return database.query(sql.test)
-    .then(result => {
-      if(result) {
-        response.send(result.rows);
-      }
-      else {
-        response.send('Whoops');
-      }
-    })
-    .catch(console.error);
-});
+app.get('/test', sqlMethods.test);
 
-app.post('/createGoal', (request, response) => {
+app.post('/createGoal', sqlMethods.createGoal);
 
-  const paramsArray = [];
-
-  const paramsObject = request.body;
-
-  Object.keys(paramsObject).forEach(key => {
-    paramsArray.push(paramsObject[key]);
-  });
-
-  let newEntry;
-  let idsArray;
-  return database.query(sql.createGoal, paramsArray)
-    .then(result => {
-      if(result) {
-        newEntry = result.rows[0];
-        idsArray = [newEntry.goal_user_id, newEntry.goal_id];
-      }
-      else {
-        response.send('Something went wrong.');
-      }
-    })
-    .then(() => {
-      database.query(sql.createProgress, idsArray)
-    })
-    .then(() => {
-      response.send({message: 'Goal Created!'});
-    })
-    .catch(console.error);
-
-});
+app.post('/goals', sqlMethods.getGoals);
 
 app.get('/logout', (request, response) => {
-  request.session.destroy((err) => {
+  request.session.destroy(() => {
     response.redirect('/');
   });
 });
