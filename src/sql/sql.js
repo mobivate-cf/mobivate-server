@@ -1,3 +1,16 @@
+/**
+ * @module oauth-helpers.js
+ */
+
+/** This is an exported object referencing a function containing sql methods.
+ * 
+ * @property {query} test - A sql query that tests connection to the database. 
+ * @property {query} createUser - A sql query that creates a new user in the database. 
+ * @property {query} createGoal - A sql query that creates a new goal in the database. 
+ * @property {query} createProgress - A sql query that updates a user's progress.
+ * @property {query} getGoals - A sql query that gets the user's current statistics from database.
+ */
+
 module.exports = sql = {
   test: `SELECT * FROM users 
     LEFT JOIN progress ON (users.user_id = progress.progress_user_id) 

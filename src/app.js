@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @module app.js
+ */
+
 require('dotenv').config();
 
 const express = require('express');
@@ -22,6 +26,16 @@ if (process.env.DYNO) {
   trustProxy = true;
 }
 
+/**
+ * Creates a new Strategy class which collects the user's Twitter login information for authentication.
+ * @param { class } - a new Strategy class
+ * @typedef {Object} Strategy
+ * @property {string} consumerKey - App key to send to Passport to verify our developer app.
+ * @property {string} consumerSecret - App secret to send to Passport to verify our developer app.
+ * @property {string} callbackURL - Callback for OAuth.
+ * @property {boolean} proxy - Creates a new server to address high volume traffic to app. Required by Passport.
+ * 
+ */
 passport.use(
   new Strategy(
     {
@@ -30,15 +44,30 @@ passport.use(
       callbackURL: '/oauth/callback',
       proxy: trustProxy,
     },
+
     function(token, tokenSecret, profile, cb) {
       return cb(null, profile);
     }
   )
 );
 
+/**
+ * This is a function for authentication.
+ * 
+ * @param {object} user - Represents the user
+ * @param {function} cb - callback function
+ */
+
 passport.serializeUser(function(user, cb) {
   cb(null, user);
 });
+
+/**
+ * This is a function for authentication.
+ * 
+ * @param {object} obj - Represents on object
+ * @param {function} cb - callback function
+ */
 
 passport.deserializeUser(function(obj, cb) {
   cb(null, obj);
@@ -52,12 +81,28 @@ app.use(require('express-session')({ secret: SESSION_SECRET, resave: false, save
 
 app.use(passport.initialize());
 
+/**
+ * This is a method used for authentication when the user signs into the app.
+ * 
+ * @param {string} '/login/twitter' - This is a route for authenticating user.
+ * @param {method} - passport.authenticate('twitter') This is a method call from Passport to authenticate. 
+ * @param {function} - request, response is an anonymous function.
+ */
+
 app.get(
   '/login/twitter',
   passport.authenticate('twitter'),
   (request, response) => {
-  response.send({ eroor: 'Error logging into Twitter' });
+  response.send({ error: 'Error logging into Twitter' });
 });
+
+/**
+ * This is a method used for authentication when the user signs into the app.
+ * 
+ * @param {string} '/oauth/callback' - This is a route for authenticating user.
+ * @param {method} - passport.authenticate('twitter') This is a method call from Passport to authenticate. 
+ * @param {function} - request, response is an anonymous function.
+ */
 
 app.get(
   '/oauth/callback',
@@ -79,17 +124,54 @@ app.get(
   }
 );
 
+/**
+ * This is a route for viewing user goals or the homepage.
+ * 
+ * @param {string} '/dashboard' - This is a route for viewing user goals or the homepage.
+ * @param {function} - request, response is an anonymous function that lets the user know when logged in.
+ */
+
 app.get('/dashboard', (request, response) => {
   response.send('Logged in!');
 });
 
+/** This is a route for verification.
+* 
+* @param {string} '/test' - This is a route for testing.
+* @param {function} - sqlMethods.test - This is a function to verify a response from the server.
+*/
+
 app.get('/test', sqlMethods.test);
+
+/** This is a route for creating a user campaign.
+* 
+* @param {string} '/createGoal' - This is a route for creating a new campaign.
+* @param {function} - sqlMethods.createGoal - This is a function that fires sql commands to create a campaign in the database.
+*/
 
 app.post('/createGoal', sqlMethods.createGoal);
 
+/** This is a route for viewing the user goals at login.
+* 
+* @param {string} '/goals' - This is a route for viewing the user goals at login.
+* @param {function} - sqlMethods.getGoals - This is a function that fires sql commands to render the user's current goals.
+*/
+
 app.post('/goals', sqlMethods.getGoals);
 
+/** This is a route for updating a user's goal activity.
+* 
+* @param {string} '/goals' - This is a route for updating a user's goal activity.
+* @param {function} - sqlMethods.updateGoal - This is a function that fires sql commands to update the user's goal activity record.
+*/
+
 app.post('/updateGoal', sqlMethods.updateGoal);
+
+/** This is a route for sign out.
+* 
+* @param {string} '/logout' - This is a route for sign out.
+* @param {function} - request, response is an anonymous function that signs the user out.
+*/
 
 app.get('/logout', (request, response) => {
   request.session.destroy(() => {
@@ -98,7 +180,7 @@ app.get('/logout', (request, response) => {
 });
 
 module.exports = {
-  passport: passport, //for testing
+  passport: passport, 
   server: app,
   start: (port) => app.listen(port, () => console.log(`Server up on port ${port}`)),
 };
