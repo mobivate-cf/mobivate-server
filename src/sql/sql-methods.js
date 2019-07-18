@@ -50,8 +50,8 @@ const sqlMethods = {
   },
   
   getGoals: (request, response) => {
-    console.log({headers: response.headers});
-    console.log({body: response.body});
+    console.log({headers: request.headers});
+    console.log({body: request.body});
     const user_id = ['12345'];
     database.query(sql.getGoals, user_id)
       .then(response.send())
