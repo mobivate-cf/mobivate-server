@@ -40,7 +40,7 @@ const sqlMethods = {
   const paramsArray = [];
   const paramsObject = request.body;
   
-  const startDate = request.body;
+  const startDate = request.body.goal_start_date;
 
   Object.keys(paramsObject).forEach(key => {
     paramsArray.push(paramsObject[key]);
@@ -69,7 +69,7 @@ const sqlMethods = {
       }
     })
     .then(() => {
-      database.query(sql.createProgress, idsArray)
+      return database.query(sql.createProgress, idsArray)
     })
     .then((result) => {
       console.log({createProgressResult: result})
@@ -106,7 +106,7 @@ const sqlMethods = {
     const goal_id = request.body.goal_id;
     database.query(`SELECT next_due_date, frequency FROM progress LEFT JOIN goals ON (goals.goal_id = progress.progress_goal_id) WHERE (progress.progress_goal_id = $1)`, [goal_id])
       .then(result => {
-        console.log({rows: result.rows})
+        console.log({due: result.rows[0].next_due_date, freq: result.rows[0].frequency})
         const previousDueDate = result.rows[0].next_due_date;
         const frequency = result.rows[0].frequency;
         let dueDate;
@@ -115,11 +115,11 @@ const sqlMethods = {
         } else if (frequency === 'weekly') {
           dueDate = parseInt(previousDueDate) + WEEK_IN_MS;
         }
-        database.query(`UPDATE progress SET next_due_date = $1 WHERE (progress.progress_goal_id = $2)`, [dueDate, goal_id])
+        return database.query(`UPDATE progress SET next_due_date = $1 WHERE (progress.progress_goal_id = $2) RETURNING next_due_date`, [dueDate, goal_id])
       })
       .then(result => {
         console.log({done: result.rows})
-        response.send(result)
+        response.send(result.rows[0].next_due_date)
       })
       .catch(console.error);
   },
