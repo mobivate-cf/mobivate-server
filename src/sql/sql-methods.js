@@ -36,10 +36,10 @@ const sqlMethods = {
       try {
         newEntry = result.rows[0];
         let dueDate;
-        if (frequency = 'daily') {
+        if (result.rows[0].frequency = 'daily') {
           dueDate = parseInt(startDate) + DAY_IN_MS;
-          console.log(dueDate);
-        } else if ('weekly') {
+          console.log({dueDate});
+        } else if (result.rows[0].frequency === 'weekly') {
           dueDate = parseInt(startDate) + WEEK_IN_MS;
           console.log({dueDate})
         }
