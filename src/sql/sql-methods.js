@@ -37,11 +37,14 @@ const sqlMethods = {
         newEntry = result.rows[0];
         let dueDate;
         if (frequency = 'daily') {
-          dueDate = startDate + DAY_IN_MS;
+          dueDate = parseInt(startDate) + DAY_IN_MS;
+          console.log(dueDate);
         } else if ('weekly') {
-          dueDate = startDate + WEEK_IN_MS;
+          dueDate = parseInt(startDate) + WEEK_IN_MS;
+          console.log({dueDate})
         }
         idsArray = [newEntry.goal_user_id, newEntry.goal_id, dueDate];
+        console.lod({idsArray})
       }
       catch (error) {
         response.send('Something went wrong.');
