@@ -97,11 +97,11 @@ const sqlMethods = {
         } else if (frequency === 'weekly') {
           dueDate = parseInt(previousDueDate) + WEEK_IN_MS;
         }
-        return database.query(`UPDATE progress SET next_due_date = $1 WHERE (progress.progress_goal_id = $2)`, [dueDate, goal_id])
+        return database.query(`UPDATE progress SET next_due_date = $1 WHERE (progress.progress_goal_id = $2) RETURNING next_due_date`, [dueDate, goal_id])
       })
       .then(result => {
         console.log({done: result.rows})
-        response.send(result)
+        response.send(result.rows[0].next_due_date)
       })
       .catch(console.error);
   },
