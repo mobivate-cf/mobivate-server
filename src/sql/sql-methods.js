@@ -18,7 +18,7 @@ const sqlMethods = {
   const paramsArray = [];
   const paramsObject = request.body;
   
-  const startDate = Date.now(); // This should come from frontend, hardcoded for now
+  const startDate = request.body; // This should come from frontend, hardcoded for now
 
   // Chris - these will be used to compute the number of goals throughout the campaign, not yet implemented.
   // const endDate = request.body.goal_end_date;  
@@ -88,19 +88,19 @@ const sqlMethods = {
     const goal_id = request.body.goal_id;
     database.query(`SELECT (next_due_date, frequency) FROM progress LEFT JOIN goals ON (goals.goal_id = progress.progress_goal_id) WHERE (progress.progress_goal_id = $1)`, [goal_id])
       .then(result => {
-        console.log({result})
+        console.log({rows: result.rows})
         const previousDueDate = result.rows[0].next_due_date;
         const frequency = results.rows[0].frequency;
         let dueDate;
         if(frequency === 'daily') {
-          dueDate = previousDueDate + DAY_IN_MS;
+          dueDate = parseInt(previousDueDate) + DAY_IN_MS;
         } else if (frequency === 'weekly') {
-          dueDate = previousDueDate + WEEK_IN_MS;
+          dueDate = parseInt(previousDueDate) + WEEK_IN_MS;
         }
         database.query(`UPDATE progress SET next_due_date = $1 WHERE (progress.progress_goal_id = $2)`, [dueDate, goal_id])
       })
       .then(result => {
-        console.log({result})
+        console.log({done: result.rows})
         response.send(result)
       })
       .catch(console.error);
