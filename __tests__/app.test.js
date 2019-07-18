@@ -24,14 +24,15 @@ describe('App', () => {
       })
       .catch(console.error);
   });
-  
+
   it('returns json on /test route', () => {
     supertest(server)
       .get('/test')
       .then(response => {
         console.log(response.text)
         expect(typeof response.text).toBe('string');
-      });
+      })
+      .catch(console.error)
   });
 
   it('calling /login/twitter route activates passport middleware', () => {
@@ -41,7 +42,11 @@ describe('App', () => {
       .then(() => {
         expect(spy).toHaveBeenCalled();
         spy.mockRestore();
-      });
+      })
+      .catch(() => {
+        expect(spy).toHaveBeenCalled();
+        spy.mockRestore();
+      })
   });
 
 });

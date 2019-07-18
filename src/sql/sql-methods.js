@@ -3,8 +3,8 @@
 const pg = require('pg');
 const sql = require('./sql');
 
-const database = new pg.Client(`${process.env.DATABASE_URL}`);
-
+// const database = new pg.Client(`${process.env.DATABASE_URL}`);
+const database = new pg.Client(`postgresql://postgres@localhost/test`); // for local testing
 database.connect();
 database.on('error', error => console.log(error));
 
@@ -24,11 +24,11 @@ const sqlMethods = {
   let idsArray;
   return database.query(sql.createGoal, paramsArray)
     .then(result => {
-      if(result) {
+      try {
         newEntry = result.rows[0];
         idsArray = [newEntry.goal_user_id, newEntry.goal_id];
       }
-      else {
+      catch (error) {
         response.send('Something went wrong.');
       }
     })
@@ -46,7 +46,12 @@ const sqlMethods = {
     Object.keys(userDatabaseObject).forEach(key => {
       paramsArray.push(userDatabaseObject[key]);
     });
-    return database.query(sql.createUser, paramsArray)
+    try {
+      return database.query(sql.createUser, paramsArray)
+    }
+    catch (error) {
+      return 'Error';
+    }
   },
   
   getGoals: (request, response) => {
@@ -71,7 +76,9 @@ const sqlMethods = {
           response.sendStatus(400);
         }
       })
-      .catch(console.error);
+      .catch(error => {
+        response.send('Error');
+      });
   }
 };
 
