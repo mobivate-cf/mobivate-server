@@ -1,28 +1,46 @@
 'use strict';
 
+/**
+ * @module sql-methods.js
+ */
+
 const pg = require('pg');
 const sql = require('./sql');
 
 const database = new pg.Client(`${process.env.DATABASE_URL}`);
-// const database = new pg.Client(`postgresql://postgres@localhost/test`); // for local testing
+
 database.connect();
 database.on('error', error => console.log(error));
 
 const DAY_IN_MS = 86400000;
 const WEEK_IN_MS = 604800000;
 
+/**
+ * This is an object with sql methods.
+ * 
+ * @property {function} createGoal - A function that creates a user goal.
+ * @return {function} database.query(sql.createGoal, paramsArray - A function that fires a query to the database.
+ * 
+ * @property {function} createUser - A function that creates a user.
+ * @return {function} database.query(sql.createGoal, paramsArray - A function that fires a query to the database.
+ * 
+ * @property {function} getGoal - A function that retrieves current goal data.
+ * @return {function} database.query(sql.createGoal, paramsArray - A function that fires a query to the database.
+ * 
+ * @property {function} updateGoal - A function that updates an existing goal.
+ * @return {function} database.query(sql.createGoal, paramsArray - A function that fires a query to the database.
+ * 
+ * @property {function} test - A function that tests connection to database.
+ * @return {function} database.query(sql.createGoal, paramsArray - A function that fires a query to the database.
+ */
+
 const sqlMethods = {
   
-  //Becky & Chris - The paramsArray is needed to pass the values through the SQL commands dynamically. The data comes to us in an object.
   createGoal: (request, response) => {
   const paramsArray = [];
   const paramsObject = request.body;
   
-  const startDate = request.body; // This should come from frontend, hardcoded for now
-
-  // Chris - these will be used to compute the number of goals throughout the campaign, not yet implemented.
-  // const endDate = request.body.goal_end_date;  
-  // const frequency = request.body.goal_frequency;
+  const startDate = request.body;
 
   Object.keys(paramsObject).forEach(key => {
     paramsArray.push(paramsObject[key]);

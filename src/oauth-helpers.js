@@ -9,7 +9,6 @@ const NUMBER_OF_SALTS = parseInt(process.env.NUMBER_OF_SALTS);
 module.exports = {
 
   buildUserData: (request) => {
-    console.log(request)
     const sessionId = request.sessionID;
     const sessionData = request.sessionStore.sessions[sessionId];
     const oAuthData = JSON.parse(sessionData)['oauth:twitter'];
@@ -28,7 +27,7 @@ module.exports = {
 
     return savedUserData;
   },
-
+ 
   hashUserData: (savedUserData) => {
     //Becky & Chris - These are tracked to permit write permissions on user's behalf.
     const authJson = JSON.stringify({
