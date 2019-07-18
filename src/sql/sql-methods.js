@@ -52,7 +52,7 @@ const sqlMethods = {
   getGoals: (request, response) => {
     console.log({headers: request.headers});
     console.log({body: request.body});
-    const user_id = ['12345'];
+    const user_id = [request.body.goal_user_id];
     database.query(sql.getGoals, user_id)
       .then(result => {
         console.log(result);
