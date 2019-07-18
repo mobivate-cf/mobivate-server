@@ -14,5 +14,19 @@ sqlMethods.test = (testing) => {
   });
 }
 
+const database = {};
 
-module.exports = sqlMethods;
+database.query = (sql, param) => {
+  return new Promise((resolve, reject) => {
+    resolve(
+      {
+        rows: [ { test: 'test' } ] 
+      } 
+    );
+  })
+}
+
+database.connect = () => {};
+database.on = () => {};
+
+module.exports = database;

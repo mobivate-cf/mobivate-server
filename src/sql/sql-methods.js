@@ -3,8 +3,8 @@
 const pg = require('pg');
 const sql = require('./sql');
 
-// const database = new pg.Client(`${process.env.DATABASE_URL}`);
-const database = new pg.Client(`postgresql://postgres@localhost/test`); // for local testing
+const database = new pg.Client(`${process.env.DATABASE_URL}`);
+// const database = new pg.Client(`postgresql://postgres@localhost/test`); // for local testing
 database.connect();
 database.on('error', error => console.log(error));
 
