@@ -87,7 +87,7 @@ app.get('/test', sqlMethods.test);
 
 app.post('/createGoal', sqlMethods.createGoal);
 
-app.post('/goals, sqlMethods.getGoals');
+app.post('/goals', sqlMethods.getGoals);
 
 app.get('/logout', (request, response) => {
   request.session.destroy(() => {
