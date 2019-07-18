@@ -72,7 +72,7 @@ app.get(
       .then(() => {
         //Becky & Chris - This link will break if not on one line.
         response.redirect(
-          `exp://exp.host/@jagdeepsing_/front-end/?id=${userDatabaseObject.user_id}&display_name=${userDatabaseObject.display_name}&user_name=${userDatabaseObject.user_handle}`
+          `exp://74-3er.jagdeepsing.front-end.exp.direct:80/?id=${userDatabaseObject.user_id}&display_name=${userDatabaseObject.display_name}&user_name=${userDatabaseObject.user_handle}`
         );
       })
       .catch(console.error);
