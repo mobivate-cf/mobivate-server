@@ -32,7 +32,7 @@ const sqlMethods = {
   let idsArray;
   return database.query(sql.createGoal, paramsArray)
     .then(result => {
-      console.log({creaGoalResponse: result})
+      console.log({createGoalResponse: result.rows, json: JSON.stringify(result.rows)})
       try {
         newEntry = result.rows[0];
         let dueDate;
