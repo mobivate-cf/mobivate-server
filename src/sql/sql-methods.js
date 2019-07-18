@@ -86,11 +86,11 @@ const sqlMethods = {
   
   updateGoal: (request, response) => {
     const goal_id = request.body.goal_id;
-    database.query(`SELECT (next_due_date, frequency) FROM progress LEFT JOIN goals ON (goals.goal_id = progress.progress_goal_id) WHERE (progress.progress_goal_id = $1)`, [goal_id])
+    database.query(`SELECT next_due_date, frequency FROM progress LEFT JOIN goals ON (goals.goal_id = progress.progress_goal_id) WHERE (progress.progress_goal_id = $1)`, [goal_id])
       .then(result => {
         console.log({rows: result.rows})
         const previousDueDate = result.rows[0].next_due_date;
-        const frequency = results.rows[0].frequency;
+        const frequency = result.rows[0].frequency;
         let dueDate;
         if(frequency === 'daily') {
           dueDate = parseInt(previousDueDate) + DAY_IN_MS;
