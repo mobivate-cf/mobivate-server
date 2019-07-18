@@ -18,7 +18,7 @@ const sqlMethods = {
   const paramsArray = [];
   const paramsObject = request.body;
   
-  const startDate = request.body.goal_start_date;
+  const startDate = Date.now(); // This should come from frontend, hardcoded for now
 
   // Chris - these will be used to compute the number of goals throughout the campaign, not yet implemented.
   // const endDate = request.body.goal_end_date;  
@@ -32,6 +32,7 @@ const sqlMethods = {
   let idsArray;
   return database.query(sql.createGoal, paramsArray)
     .then(result => {
+      console.log({creaGoalResponse: result})
       try {
         newEntry = result.rows[0];
         let dueDate;
@@ -49,7 +50,8 @@ const sqlMethods = {
     .then(() => {
       database.query(sql.createProgress, idsArray)
     })
-    .then(() => {
+    .then((result) => {
+      console.log({createProgressResult: result})
       response.send({message: 'Goal Created!'});
     })
     .catch(console.error);
