@@ -48,6 +48,7 @@ app.use(express.static('public'));
 app.use(require('morgan')('combined'));
 
 app.use(require('body-parser').urlencoded({ extended: true }));
+
 app.use(require('express-session')({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }));
 
 app.use(passport.initialize());
@@ -57,6 +58,7 @@ app.get(
   passport.authenticate('twitter'),
   (request, response) => {
   response.send({ eroor: 'Error logging into Twitter' });
+
 });
 
 app.get(
@@ -71,9 +73,6 @@ app.get(
     return sqlMethods.createUser(userDatabaseObject)
       .then(() => {
         //Becky & Chris - This link will break if not on one line.
-//         response.redirect(
-//           `exp://exp.host/@jagdeepsing_/front-end/?id=${userDatabaseObject.user_id}&display_name=${userDatabaseObject.display_name}&user_name=${userDatabaseObject.user_handle}`
-//         );
           response.redirect(
             `exp://74-3er.jagdeepsing.front-end.exp.direct:80/?id=${userDatabaseObject.user_id}&display_name=${userDatabaseObject.display_name}&user_name=${userDatabaseObject.user_handle}`
           );
