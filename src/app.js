@@ -77,6 +77,7 @@ app.use(express.static('public'));
 app.use(require('morgan')('combined'));
 
 app.use(require('body-parser').urlencoded({ extended: true }));
+
 app.use(require('express-session')({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }));
 
 app.use(passport.initialize());
