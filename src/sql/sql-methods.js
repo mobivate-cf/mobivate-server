@@ -44,7 +44,7 @@ const sqlMethods = {
           console.log({dueDate})
         }
         idsArray = [newEntry.goal_user_id, newEntry.goal_id, dueDate];
-        console.lod({idsArray})
+        console.log({idsArray})
       }
       catch (error) {
         response.send('Something went wrong.');
