@@ -18,7 +18,7 @@ const sqlMethods = {
   const paramsArray = [];
   const paramsObject = request.body;
   
-  const startDate = request.body.rows[0].goal_start_date; // This should come from frontend, hardcoded for now
+  const startDate = request.body.goal_start_date; // This should come from frontend, hardcoded for now
 
   // Chris - these will be used to compute the number of goals throughout the campaign, not yet implemented.
   // const endDate = request.body.goal_end_date;  
