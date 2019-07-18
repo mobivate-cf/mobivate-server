@@ -50,7 +50,7 @@ const sqlMethods = {
   },
   
   getGoals: (request, response) => {
-    console.log(request);
+    console.log(request.headers);
     response.sendStatus(200);
     const user_id = [request.body[user_id]]
     console.log(user_id)
