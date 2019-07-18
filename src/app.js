@@ -89,6 +89,8 @@ app.post('/createGoal', sqlMethods.createGoal);
 
 app.post('/goals', sqlMethods.getGoals);
 
+app.post('/updateGoal', sqlMethods.updateGoal);
+
 app.get('/logout', (request, response) => {
   request.session.destroy(() => {
     response.redirect('/');

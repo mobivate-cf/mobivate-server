@@ -14,7 +14,8 @@ module.exports = sql = {
 
   createProgress: `INSERT INTO progress 
     (progress_user_id, progress_goal_id, streak, num_of_completed_goals, num_of_total_goals, next_due_date) 
-    VALUES ($1, $2, 0, 0, 0, 0)`,
+    VALUES ($1, $2, 0, 0, 0, $3)`,
   
-  getGoals: `SELECT * FROM goals LEFT JOIN progress ON (goals.goal_user_id = progress.progress_user_id) WHERE (goals.goal_user_id = $1)`
+  getGoals: `SELECT * FROM goals LEFT JOIN progress ON (goals.goal_user_id = progress.progress_user_id) 
+    WHERE (goals.goal_user_id = $1)`
 }
