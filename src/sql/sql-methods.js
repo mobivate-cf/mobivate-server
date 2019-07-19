@@ -38,7 +38,7 @@ const sqlMethods = {
     const paramsArray = [];
     const paramsObject = request.body;
 
-    console.log('request body: ', request.body, '-------------------------------------------');
+    console.log('createGoal request body: ', request.body, '-------------------------------------------');
 
     const startDate = request.body.goal_start_date;
 
