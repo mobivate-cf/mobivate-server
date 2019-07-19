@@ -3,7 +3,7 @@
 const bcrypt = require('bcrypt');
 const jsonWebToken = require('jsonwebtoken');
 
-const SECRET = process.env.JSONWEBTOKEN_SECRET;
+const SECRET = process.env.JSONWEBTOKEN_SECRET || 'fortesting';
 const NUMBER_OF_SALTS = parseInt(process.env.NUMBER_OF_SALTS);
 
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
 
     return savedUserData;
   },
-
+ 
   hashUserData: (savedUserData) => {
     //Becky & Chris - These are tracked to permit write permissions on user's behalf.
     const authJson = JSON.stringify({

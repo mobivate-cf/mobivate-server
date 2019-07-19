@@ -30,7 +30,3 @@ CREATE TABLE progress(
   FOREIGN KEY(progress_user_id) REFERENCES users(user_id),
   FOREIGN KEY(progress_goal_id) REFERENCES goals(goal_id)
 );
-
-INSERT INTO users VALUES ('fDSbgn34GVr4v5j4nv$g53@gfl6', 'testuser', '@testuser', 'I am a string');
-INSERT INTO goals VALUES (10, 'fDSbgn34GVr4v5j4nv$g53@gfl6', 'exercise', 1234567890123, 1234567899123, 'weekly');
-INSERT INTO progress VALUES (100, 'fDSbgn34GVr4v5j4nv$g53@gfl6', 10, 8, 4, 9, 1234567890122);
