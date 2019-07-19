@@ -163,6 +163,9 @@ app.post('/updateGoal', sqlMethods.updateGoal);
  * @param {string} '/logout' - This is a route for sign out.
  * @param {function} - request, response is an anonymous function that signs the user out.
  */
+
+app.post('/deleteGoal', sqlMethods.deleteGoal);
+
 app.get('/logout', (request, response) => {
   request.session.destroy(() => {
     response.redirect('/');

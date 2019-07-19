@@ -125,6 +125,25 @@ const sqlMethods = {
       .catch(console.error);
   },
 
+  deleteGoal: (request, response) => {
+    const paramsArray = [request.body.goal_id, request.body.goal_user_id];
+    database.query(`DELETE FROM progress WHERE (progress_goal_id = $1)`, paramsArray)
+    .then (() => {
+      return database.query(`DELETE FROM goals WHERE (goal_id = $1)`, paramsArray)
+        .then(result => {
+          response.send({message: 'Goal Deleted'})
+        })
+        .catch(error => {
+          console.error(error);
+          response.send({message: 'Error Deleting Goal'})
+        })
+    })
+    .catch(error => {
+      console.error(error);
+      response.send({message: 'Error Deleting Goal'})
+    });
+  },
+
   test: (request, response) => {
     return database
       .query(sql.test)
