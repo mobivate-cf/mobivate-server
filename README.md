@@ -31,7 +31,6 @@ All routes in this backend are accesed through the React Native application.
 
 ## Testing
 
-Tests performed:
 * Routes that access the database are querying the database with the correct data.
 * Data for users that is collected from Twitter OAuth is structured correctly.
 * Data retrieved from the database is structured correctly.
