@@ -35,42 +35,43 @@ const WEEK_IN_MS = 604800000;
  */
 const sqlMethods = {
   createGoal: (request, response) => {
-    const paramsArray = [];
     const paramsObject = request.body;
-
-    console.log('createGoal request body: ', request.body, '-------------------------------------------');
 
     const startDate = request.body.goal_start_date;
 
-    Object.keys(paramsObject).forEach((key) => {
-      paramsArray.push(paramsObject[key]);
-    });
+    const paramsArray = [
+      request.body.goal_user_id,
+      request.body.goal_name,
+      request.body.goal_start_date,
+      request.body.goal_end_date,
+      request.body.frequency,
+    ];
 
-    // let newEntry;
-    // let idsArray;
-    // return database
-    //   .query(sql.createGoal, paramsArray)
-    //   .then((result) => {
-    //     try {
-    //       newEntry = result.rows[0];
-    //       let dueDate;
-    //       if ((result.rows[0].frequency = 'daily')) {
-    //         dueDate = parseInt(startDate) + DAY_IN_MS;
-    //       } else if (result.rows[0].frequency === 'weekly') {
-    //         dueDate = parseInt(startDate) + WEEK_IN_MS;
-    //       }
-    //       idsArray = [newEntry.goal_user_id, newEntry.goal_id, dueDate];
-    //     } catch (error) {
-    //       response.send('Something went wrong.');
-    //     }
-    //   })
-    //   .then(() => {
-    //     return database.query(sql.createProgress, idsArray);
-    //   })
-    //   .then((result) => {
-    //     response.send({ message: 'Goal Created!' });
-    //   })
-    //   .catch(console.error);
+    let newEntry;
+    let idsArray;
+    return database
+      .query(sql.createGoal, paramsArray)
+      .then((result) => {
+        try {
+          newEntry = result.rows[0];
+          let dueDate;
+          if ((result.rows[0].frequency = 'daily')) {
+            dueDate = parseInt(startDate) + DAY_IN_MS;
+          } else if (result.rows[0].frequency === 'weekly') {
+            dueDate = parseInt(startDate) + WEEK_IN_MS;
+          }
+          idsArray = [newEntry.goal_user_id, newEntry.goal_id, dueDate];
+        } catch (error) {
+          response.send('Something went wrong.');
+        }
+      })
+      .then(() => {
+        return database.query(sql.createProgress, idsArray);
+      })
+      .then((result) => {
+        response.send({ message: 'Goal Created!' });
+      })
+      .catch(console.error);
   },
 
   createUser: (userDatabaseObject) => {
