@@ -46,31 +46,31 @@ const sqlMethods = {
       paramsArray.push(paramsObject[key]);
     });
 
-    let newEntry;
-    let idsArray;
-    return database
-      .query(sql.createGoal, paramsArray)
-      .then((result) => {
-        try {
-          newEntry = result.rows[0];
-          let dueDate;
-          if ((result.rows[0].frequency = 'daily')) {
-            dueDate = parseInt(startDate) + DAY_IN_MS;
-          } else if (result.rows[0].frequency === 'weekly') {
-            dueDate = parseInt(startDate) + WEEK_IN_MS;
-          }
-          idsArray = [newEntry.goal_user_id, newEntry.goal_id, dueDate];
-        } catch (error) {
-          response.send('Something went wrong.');
-        }
-      })
-      .then(() => {
-        return database.query(sql.createProgress, idsArray);
-      })
-      .then((result) => {
-        response.send({ message: 'Goal Created!' });
-      })
-      .catch(console.error);
+    // let newEntry;
+    // let idsArray;
+    // return database
+    //   .query(sql.createGoal, paramsArray)
+    //   .then((result) => {
+    //     try {
+    //       newEntry = result.rows[0];
+    //       let dueDate;
+    //       if ((result.rows[0].frequency = 'daily')) {
+    //         dueDate = parseInt(startDate) + DAY_IN_MS;
+    //       } else if (result.rows[0].frequency === 'weekly') {
+    //         dueDate = parseInt(startDate) + WEEK_IN_MS;
+    //       }
+    //       idsArray = [newEntry.goal_user_id, newEntry.goal_id, dueDate];
+    //     } catch (error) {
+    //       response.send('Something went wrong.');
+    //     }
+    //   })
+    //   .then(() => {
+    //     return database.query(sql.createProgress, idsArray);
+    //   })
+    //   .then((result) => {
+    //     response.send({ message: 'Goal Created!' });
+    //   })
+    //   .catch(console.error);
   },
 
   createUser: (userDatabaseObject) => {
