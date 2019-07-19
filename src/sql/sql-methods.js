@@ -126,7 +126,7 @@ const sqlMethods = {
   },
 
   deleteGoal: (request, response) => {
-    const paramsArray = [request.body.goal_id, request.body.goal_user_id];
+    const paramsArray = [request.body.goal_id];
     database.query(`DELETE FROM progress WHERE (progress_goal_id = $1)`, paramsArray)
     .then (() => {
       return database.query(`DELETE FROM goals WHERE (goal_id = $1)`, paramsArray)
