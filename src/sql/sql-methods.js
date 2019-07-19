@@ -40,6 +40,8 @@ const sqlMethods = {
   const paramsArray = [];
   const paramsObject = request.body;
   
+  console.log(request.body);
+  
   const startDate = request.body.goal_start_date;
 
   Object.keys(paramsObject).forEach(key => {
