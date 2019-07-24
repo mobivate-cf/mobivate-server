@@ -130,13 +130,6 @@ app.get('/dashboard', (request, response) => {
   response.send('Logged in!');
 });
 
-/** This is a route for verification.
- *
- * @param {string} '/test' - This is a route for testing.
- * @param {function} - sqlMethods.test - This is a function to verify a response from the server.
- */
-app.get('/test', sqlMethods.test);
-
 /** This is a route for creating a user campaign.
  *
  * @param {string} '/createGoal' - This is a route for creating a new campaign.
