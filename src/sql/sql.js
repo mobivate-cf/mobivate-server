@@ -30,5 +30,14 @@ module.exports = sql = {
     VALUES ($1, $2, 0, 0, 0, $3)`,
   
   getGoals: `SELECT * FROM goals LEFT JOIN progress ON (goals.goal_id = progress.progress_goal_id) 
-    WHERE (goals.goal_user_id = $1)`
+    WHERE (goals.goal_user_id = $1)`,
+
+  updateGoal: `SELECT next_due_date, frequency FROM progress LEFT JOIN goals ON (goals.goal_id = progress.progress_goal_id) WHERE (progress.progress_goal_id = $1)`,
+
+  updateProgress: `UPDATE progress SET next_due_date = $1 WHERE (progress.progress_goal_id = $2) RETURNING next_due_date`,
+
+  deleteProgress: `DELETE FROM progress WHERE (progress.progress_goal_id = $1)`,
+
+  deleteGoal: `DELETE FROM goals WHERE (goals.goal_id = $1)`,
+  
 }

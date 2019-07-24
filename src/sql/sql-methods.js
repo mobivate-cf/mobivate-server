@@ -102,7 +102,7 @@ const sqlMethods = {
     const goal_id = request.body.goal_id;
     database
       .query(
-        `SELECT next_due_date, frequency FROM progress LEFT JOIN goals ON (goals.goal_id = progress.progress_goal_id) WHERE (progress.progress_goal_id = $1)`,
+        sqlMethods.updateGoal,
         [goal_id]
       )
       .then((result) => {
@@ -115,7 +115,7 @@ const sqlMethods = {
           dueDate = parseInt(previousDueDate) + WEEK_IN_MS;
         }
         return database.query(
-          `UPDATE progress SET next_due_date = $1 WHERE (progress.progress_goal_id = $2) RETURNING next_due_date`,
+          sqlMethods.updateProgress,
           [dueDate, goal_id]
         );
       })
@@ -127,11 +127,10 @@ const sqlMethods = {
 
   deleteGoal: (request, response) => {
     const paramsArray = [parseInt(request.body.goal_id)];
-    console.log({body: request.body});
-    database.query(`DELETE FROM progress WHERE (progress.progress_goal_id = $1)`, paramsArray)
+    database.query(sqlMethods.deleteProgress, paramsArray)
     .then (() => {
-      return database.query(`DELETE FROM goals WHERE (goals.goal_id = $1)`, paramsArray)
-        .then(result => {
+      return database.query(sqlMethods.deleteGoal, paramsArray)
+        .then(() => {
           response.send({message: 'Goal Deleted'})
         })
         .catch(error => {
