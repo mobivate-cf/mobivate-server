@@ -51,7 +51,7 @@ app.get('/login/twitter', passport.authenticate('twitter'));
 app.get('/oauth/callback',
   passport.authenticate('twitter', { failureRedirect: '/login' }),
   (request, response) => {
-    response.redirect('exp://8q-3ig.kozlowskicd.react-native-spike.exp.direct:80');
+    response.redirect('exp://gm-ys8.anonymous.front-end.exp.direct:80');
   }
 );
 
